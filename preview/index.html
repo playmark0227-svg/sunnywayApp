@@ -6,23 +6,9 @@
   <title>Sunnyway インフルエンサーアプリ｜プレビュー</title>
   <meta name="theme-color" content="#ff7f11" />
   <meta name="description" content="Sunnyway スマホアプリの静的プレビュー（デモデータ）" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // tailwind.config.ts と同じブランドカラー
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            sunny: {
-              50: "#fff8ed", 100: "#ffefd4", 200: "#ffdca8", 300: "#ffc170",
-              400: "#ff9d37", 500: "#ff7f11", 600: "#f06306", 700: "#c74807",
-              800: "#9e390e", 900: "#7f300f",
-            },
-          },
-        },
-      },
-    };
-  </script>
+  <!-- Tailwind はビルド済み styles.css を使用（実行時CDN不要）。
+       生成: npx tailwindcss -c preview-build/tailwind.config.js -i preview-build/input.css -o preview/styles.css --minify -->
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body { -webkit-font-smoothing: antialiased; }
     .badge { display:inline-flex; align-items:center; border-radius:9999px; padding:2px 10px; font-size:12px; font-weight:500; }
