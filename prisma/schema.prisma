@@ -1,0 +1,198 @@
+// Sunnyway プラットフォーム データモデル
+// ------------------------------------------------------------
+// 役割:
+//   - ADMIN(Sunnyway 運営): 全権限を持つ管理者。Web 管理画面を使う。
+//   - INFLUENCER: 商品を取り上げる側。アプリ(PWA)を使う。
+//   - ブランドは「ログインするユーザー」ではなく、運営が管理する Brand データとして保持する
+//     （= ブランドは管理権限に直接アクセスできない、というご要望をデータ構造で担保）
+// ------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // 開発は SQLite。本番は provider を "postgresql" 等に変更し DATABASE_URL を差し替える。
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== 認証・ユーザー =====
+
+enum Role {
+  ADMIN
+  INFLUENCER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // INFLUENCER のときだけ紐づくプロフィール
+  influencer   InfluencerProfile?
+  // ADMIN の操作監査ログ
+  auditLogs    AuditLog[]
+}
+
+// ===== インフルエンサー =====
+
+model InfluencerProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  handle      String   @unique          // SNS ハンドル / 表示名
+  platform    String   @default("INSTAGRAM") // INSTAGRAM / TIKTOK / YOUTUBE / X
+  followers   Int      @default(0)
+  bio         String   @default("")
+  // ギフティング(現物提供)用の発送先。金銭報酬のみなら未設定でも可。
+  shippingAddress String @default("")
+  verified    Boolean  @default(false)  // 運営による本人/実績確認済みか
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  applications Application[]
+}
+
+// ===== ブランド・商品（運営が管理するデータ）=====
+
+// 収益モデル(複数併用可)はブランド/キャンペーン双方に設定できるようにする
+enum BillingModel {
+  MONTHLY      // 月額・掲載料
+  PER_CAMPAIGN // キャンペーン単位の課金
+  PERFORMANCE  // 成果連動(リーチ/投稿数)
+  SALES_COMMISSION // 販売手数料
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String
+  contactName String   @default("")
+  contactEmail String  @default("")
+  notes       String   @default("")
+
+  // 月額契約の有無・金額（MONTHLY モデル用）
+  monthlyFeeYen Int    @default(0)
+  active        Boolean @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products    Product[]
+  campaigns   Campaign[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  name        String
+  category    String   @default("スキンケア")
+  description String   @default("")
+  imageUrl    String   @default("")
+  retailPriceYen Int   @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaigns   Campaign[]
+}
+
+// ===== キャンペーン（＝「掲載」。ここに掲載して◯人が取り上げる、の単位）=====
+
+enum RewardType {
+  GIFTING // 現物提供(ギフティング)
+  PAID    // 金銭報酬(固定/成果)
+  BOTH    // 現物 + 金銭の併用
+}
+
+enum CampaignStatus {
+  DRAFT     // 下書き
+  OPEN      // 募集中（インフルエンサーに公開）
+  CLOSED    // 募集締切
+  COMPLETED // 完了
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  title       String
+  brief       String   @default("")        // 依頼内容・投稿条件
+  status      CampaignStatus @default(DRAFT)
+
+  // 「何人のインフルエンサーが取り上げます」の目標人数
+  targetInfluencers Int @default(10)
+
+  // 報酬設計
+  rewardType  RewardType @default(GIFTING)
+  rewardYen   Int        @default(0)        // PAID/BOTH のときの 1 人あたり報酬
+
+  // 収益モデル（運営→ブランド課金）。複数併用は BillingModel をカンマ区切りで保持。
+  billingModels String   @default("PER_CAMPAIGN")
+  campaignFeeYen Int     @default(0)        // PER_CAMPAIGN の費用
+  salesCommissionPct Int @default(0)        // SALES_COMMISSION の料率(%)
+
+  startAt     DateTime?
+  endAt       DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  applications Application[]
+}
+
+// ===== 応募・参加（インフルエンサー × キャンペーン）=====
+
+enum ApplicationStatus {
+  APPLIED   // 応募済み
+  APPROVED  // 運営が承認（参加確定）
+  REJECTED  // 却下
+  POSTED    // 投稿提出済み
+}
+
+model Application {
+  id           String   @id @default(cuid())
+  campaignId   String
+  campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  influencerId String
+  influencer   InfluencerProfile @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+
+  status       ApplicationStatus @default(APPLIED)
+  message      String   @default("")   // 応募時の一言
+
+  // 投稿提出（取り上げ実績）
+  postUrl      String   @default("")
+  postReach    Int      @default(0)    // リーチ/インプレッション
+  postedAt     DateTime?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([campaignId, influencerId]) // 同一キャンペーンへの二重応募を禁止
+}
+
+// ===== 監査ログ（管理操作の記録。セキュリティ要件）=====
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  actor     User     @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  action    String   // 例: "brand.create", "application.approve"
+  target    String   @default("") // 対象エンティティの id 等
+  meta      String   @default("") // 補足(JSON 文字列)
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([createdAt])
+}
