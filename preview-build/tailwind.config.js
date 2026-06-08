@@ -1,6 +1,6 @@
 /** プレビュー専用の Tailwind 設定。preview/index.html を走査して styles.css を生成する。 */
 module.exports = {
-  content: ["preview/index.html"],
+  content: ["preview/index.html", "preview/app.js"],
   theme: {
     extend: {
       colors: {
