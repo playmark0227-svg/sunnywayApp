@@ -1,6 +1,6 @@
 /** プレビュー専用 Tailwind 設定 — エディトリアルな高級コスメのデザインシステム */
 module.exports = {
-  content: ["preview/index.html", "preview/app.js"],
+  content: ["preview/index.html", "preview/admin.html", "preview/app.js", "preview/admin.js", "preview/common.js"],
   theme: {
     extend: {
       colors: {
