@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
-import { Icon, ArtTile, ART_BY_CATEGORY } from "@/components/Icon";
+import { Icon, Thumb, ART_BY_CATEGORY } from "@/components/Icon";
 import { AppBadge, CampaignBadge } from "@/components/ui";
 import { CountUp } from "@/components/CountUp";
 import { decideApplicationAction, confirmApplicationAction, sendbackApplicationAction, updateCampaignStatusAction } from "@/lib/actions/admin";
@@ -36,7 +36,7 @@ export default async function CampaignReport({ params }: { params: Promise<{ id:
 
       <div className="card overflow-hidden">
         <div className="flex items-center gap-5 bg-sunrise-soft p-7">
-          <div className="hidden h-20 w-20 shrink-0 overflow-hidden rounded-2xl sm:block"><ArtTile art={ART_BY_CATEGORY(c.product.category)} className="h-20" svgClass="h-12 w-12" /></div>
+          <div className="hidden h-20 w-20 shrink-0 overflow-hidden rounded-2xl sm:block"><Thumb imageUrl={c.product.imageUrl} art={ART_BY_CATEGORY(c.product.category)} className="h-20" svgClass="h-12 w-12" /></div>
           <div><p className="text-sm text-ink/60">この掲載の成果</p><p className="display mt-1 text-3xl font-semibold text-ink"><span className="grad-text bg-sunrise bg-clip-text text-transparent"><CountUp value={posted.length} />人</span>が取り上げました</p><p className="mt-1 text-sm text-muted">目標 {c.targetInfluencers}人 ・ 合計リーチ {num(reach)}</p></div>
         </div>
         <div className="grid grid-cols-2 divide-x divide-y divide-line sm:grid-cols-4 sm:divide-y-0">

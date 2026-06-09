@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireInfluencer } from "@/lib/auth";
-import { Icon, ArtTile, ART_BY_CATEGORY, Pill } from "@/components/Icon";
+import { Icon, Thumb, ART_BY_CATEGORY, Pill } from "@/components/Icon";
 import { applicationStatusLabel, appStatusStyle } from "@/lib/labels";
 
 export default async function HistoryPage() {
@@ -24,7 +24,7 @@ export default async function HistoryPage() {
           const c = a.campaign;
           return (
             <Link key={a.id} href={`/app/campaign/${c.id}`} className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3">
-              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl"><ArtTile art={ART_BY_CATEGORY(c.product.category)} className="h-12" svgClass="h-8 w-8" /></div>
+              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl"><Thumb imageUrl={c.product.imageUrl} art={ART_BY_CATEGORY(c.product.category)} className="h-12" svgClass="h-8 w-8" /></div>
               <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-ink">{c.title}</p><p className="truncate text-xs text-muted">{c.brand.name}</p></div>
               <Pill label={applicationStatusLabel[a.status]} className={appStatusStyle[a.status]} />
             </Link>

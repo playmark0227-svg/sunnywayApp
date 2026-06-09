@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, Stat, CampaignBadge } from "@/components/ui";
-import { ArtTile, ART_BY_CATEGORY } from "@/components/Icon";
+import { Thumb, ART_BY_CATEGORY } from "@/components/Icon";
 import { CountUp } from "@/components/CountUp";
 import { rewardTypeLabel } from "@/lib/labels";
 
@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
           <div className="space-y-1">
             {recent.map((c) => (
               <Link key={c.id} href={`/admin/campaigns/${c.id}`} className="flex items-center gap-3 rounded-2xl p-2 hover:bg-canvas">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl"><ArtTile art={ART_BY_CATEGORY(c.product.category)} className="h-12" svgClass="h-8 w-8" /></div>
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl"><Thumb imageUrl={c.product.imageUrl} art={ART_BY_CATEGORY(c.product.category)} className="h-12" svgClass="h-8 w-8" /></div>
                 <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-ink">{c.title}</p><p className="truncate text-xs text-muted">{c.brand.name} ・ {rewardTypeLabel[c.rewardType]}</p></div>
                 <span className="text-sm font-semibold text-sunny-600">{c._count.applications}/{c.targetInfluencers}</span>
               </Link>

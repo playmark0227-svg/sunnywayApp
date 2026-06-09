@@ -29,8 +29,8 @@ async function main() {
       name: "Lumière", contactName: "佐藤 美咲", contactEmail: "miyabi@lumiere.test", monthlyFeeYen: 50000, notes: "新スキンケアライン",
       products: {
         create: [
-          { name: "グロウ セラム C", category: "スキンケア", description: "ビタミンC配合の美容液。", retailPriceYen: 4800 },
-          { name: "モイスト クリーム", category: "スキンケア", description: "高保湿のナイトクリーム。", retailPriceYen: 3600 },
+          { name: "グロウ セラム C", category: "スキンケア", description: "ビタミンC配合の美容液。", retailPriceYen: 4800, imageUrl: "/products/serum.jpg" },
+          { name: "モイスト クリーム", category: "スキンケア", description: "高保湿のナイトクリーム。", retailPriceYen: 3600, imageUrl: "/products/cream.jpg" },
         ],
       },
     },
@@ -39,7 +39,7 @@ async function main() {
   const blossom = await prisma.brand.create({
     data: {
       name: "Blossom Tokyo", contactName: "田中 玲奈", contactEmail: "rena@blossom.test", monthlyFeeYen: 0, notes: "メイクアップ中心",
-      products: { create: [{ name: "ベルベット リップ 03", category: "メイクアップ", description: "マットな発色のリップ。", retailPriceYen: 2200 }] },
+      products: { create: [{ name: "ベルベット リップ 03", category: "メイクアップ", description: "マットな発色のリップ。", retailPriceYen: 2200, imageUrl: "/products/lip.jpg" }] },
     },
     include: { products: true },
   });
