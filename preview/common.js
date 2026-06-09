@@ -37,7 +37,7 @@ function ic(name, cls = "h-6 w-6", fill = false) {
   return `<svg class="${cls}" viewBox="0 0 24 24" ${f}>${ICON[name] || ""}</svg>`;
 }
 function sunMark(cls) {
-  return `<span class="grid place-items-center rounded-full bg-sunrise text-white ${cls}" style="padding:18%">${ic("sun", "h-full w-full")}</span>`;
+  return `<span class="grid shrink-0 place-items-center overflow-hidden rounded-full bg-white shadow-soft ${cls}"><img src="brand/mascot.png" alt="Sunnyway" class="h-[82%] w-[82%] object-contain"></span>`;
 }
 
 // ---------- コスメのイラスト ----------
@@ -48,6 +48,9 @@ const ART = {
   tube: '<path d="M27 25h10v5l-1.6 35a3 3 0 0 1-3 2.8h-.8a3 3 0 0 1-3-2.8L27 30v-5Z"/><rect x="29" y="19" width="6" height="6" rx="2"/>',
 };
 function artTile(p, hClass) {
+  if (p.image) {
+    return `<div class="relative ${hClass} w-full overflow-hidden"><img src="${p.image}" alt="" class="h-full w-full object-cover"></div>`;
+  }
   return `<div class="relative ${hClass} w-full overflow-hidden" style="background:${p.tint}">
     <div class="absolute right-3 top-3 h-10 w-10 rounded-full bg-white/35"></div>
     <div class="absolute inset-0 grid place-items-center text-ink/55"><svg class="h-24 w-24" viewBox="0 0 64 80" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round">${ART[p.art] || ""}</svg></div></div>`;
@@ -72,9 +75,9 @@ const S = {
     { id: "b-blo", name: "Blossom Tokyo", contactName: "田中 玲奈", contactEmail: "rena@blossom.test", monthlyFeeYen: 0, notes: "メイクアップ中心" },
   ],
   products: [
-    { id: "p-serum", brandId: "b-lum", name: "グロウ セラム C", category: "スキンケア", price: 4800, art: "serum", tint: "linear-gradient(135deg,#FDEFE7,#FBE6EC)" },
-    { id: "p-cream", brandId: "b-lum", name: "モイスト クリーム", category: "スキンケア", price: 3600, art: "jar", tint: "linear-gradient(135deg,#F4EFE6,#FBEFD9)" },
-    { id: "p-lip", brandId: "b-blo", name: "ベルベット リップ 03", category: "メイクアップ", price: 2200, art: "lipstick", tint: "linear-gradient(135deg,#FBE6EC,#F6DCEA)" },
+    { id: "p-serum", brandId: "b-lum", name: "グロウ セラム C", category: "スキンケア", price: 4800, art: "serum", image: "products/serum.jpg", tint: "linear-gradient(135deg,#FDEFE7,#FBE6EC)" },
+    { id: "p-cream", brandId: "b-lum", name: "モイスト クリーム", category: "スキンケア", price: 3600, art: "jar", image: "products/cream.jpg", tint: "linear-gradient(135deg,#F4EFE6,#FBEFD9)" },
+    { id: "p-lip", brandId: "b-blo", name: "ベルベット リップ 03", category: "メイクアップ", price: 2200, art: "lipstick", image: "products/lip.jpg", tint: "linear-gradient(135deg,#FBE6EC,#F6DCEA)" },
   ],
   campaigns: [
     { id: "c1", brandId: "b-lum", productId: "p-serum", title: "グロウ セラム C を2週間レビュー", brief: "使用感とテクスチャーを率直に。ストーリーズ1回＋フィード1投稿。", status: "OPEN", target: 30, applied: 42, deadline: "6/30", media: "Instagram Feed", tags: ["顔出し不要"], rewardType: "GIFTING", rewardYen: 0, billing: ["MONTHLY", "PERFORMANCE"], fee: 0, commission: 0 },

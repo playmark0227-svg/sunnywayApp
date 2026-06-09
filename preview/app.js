@@ -25,7 +25,7 @@ window.addEventListener("hashchange", () => { if (phase === "app") render(); });
 // オンボーディング（チュートリアル）
 // ============================================================
 const SLIDES = [
-  { brand: true, title: "Sunnyway", sub: "好きなコスメで、つながる。" },
+  { brand: true, title: "Sunnyway", sub: "サプライズを起こし続けよう。" },
   { art: "serum", title: "好きなコスメに、出会う。", sub: "あなたに合った案件が、毎日届く。" },
   { art: "lipstick", title: "応募して、投稿するだけ。", sub: "面倒な手続きはなし。スマホひとつで完結。" },
   { art: "jar", title: "報酬は、まっすぐ届く。", sub: "ギフティングも金銭報酬も、振込まで一元管理。" },
@@ -46,8 +46,8 @@ function renderOnboarding() {
   root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col bg-canvas px-7" style="padding-top:max(1rem,env(safe-area-inset-top))">
     <div class="flex justify-end py-2"><button class="rounded-full px-3 py-2 text-sm font-medium text-muted" data-act="ob-skip">スキップ</button></div>
     <div class="flex flex-1 flex-col items-center justify-center text-center">
-      <div class="relative grid h-64 w-64 place-items-center rounded-[2.5rem] shadow-card" style="background:${product(slide === 1 ? "p-serum" : slide === 2 ? "p-lip" : "p-cream").tint}">
-        <div class="text-ink/55"><svg class="h-32 w-32" viewBox="0 0 64 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ART[s.art]}</svg></div>
+      <div class="relative h-64 w-64 overflow-hidden rounded-[2.5rem] shadow-card">
+        <img src="${product(slide === 1 ? "p-serum" : slide === 2 ? "p-lip" : "p-cream").image}" alt="" class="h-full w-full object-cover">
         <span class="absolute -right-3 -top-3 grid h-12 w-12 place-items-center rounded-2xl bg-surface text-sunny-500 shadow-soft">${ic(slide === 1 ? "heart" : slide === 2 ? "send" : "receipt", "h-6 w-6")}</span>
       </div>
       <h2 class="display mt-10 text-2xl font-semibold leading-snug text-ink">${s.title}</h2>
