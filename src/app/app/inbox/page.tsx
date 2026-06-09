@@ -9,8 +9,8 @@ export default async function InboxPage() {
   const messages = await prisma.message.findMany({ where: { influencerId: profile!.id }, orderBy: { createdAt: "asc" } });
 
   return (
-    <div className="flex h-[100dvh] flex-col">
-      <header className="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
+    <div className="flex flex-col" style={{ height: "calc(100dvh - 4.5rem - env(safe-area-inset-bottom))" }}>
+      <header className="flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <h1 className="display text-xl font-semibold text-ink">メッセージ</h1>
       </header>
       <div className="flex items-center gap-2 border-b border-line px-5 py-2.5 text-sm font-semibold text-ink"><SunMark className="h-6 w-6" /> Sunnyway 公式</div>

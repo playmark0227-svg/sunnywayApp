@@ -113,7 +113,7 @@ export function BankForm({ bank }: { bank: string }) {
 export function MessageForm() {
   const [state, action] = useActionState<FormState, FormData>(sendMessageAction, undefined);
   return (
-    <form action={action} key={state?.ok ? Math.random() : "f"} className="flex items-center gap-2 border-t border-line bg-surface p-3" style={{ paddingBottom: "max(0.75rem,env(safe-area-inset-bottom))" }}>
+    <form action={action} key={state?.ok ? Math.random() : "f"} className="flex items-center gap-2 border-t border-line bg-surface p-3">
       <input name="text" className="input flex-1 rounded-full" placeholder="メッセージを入力…" autoComplete="off" required />
       <Submit className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sunny-500 text-white shadow-lift active:scale-95"><Icon name="send" className="h-5 w-5" /></Submit>
     </form>

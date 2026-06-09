@@ -50,8 +50,8 @@ export function Icon({
 
 export function SunMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
-    <span className={`grid place-items-center rounded-full bg-sunrise text-white ${className}`} style={{ padding: "18%" }}>
-      <Icon name="sun" className="h-full w-full" />
+    <span className={`inline-grid shrink-0 place-items-center overflow-hidden rounded-full bg-sunrise text-white ${className}`}>
+      <Icon name="sun" className="h-[58%] w-[58%]" />
     </span>
   );
 }

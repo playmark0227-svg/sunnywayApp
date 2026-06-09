@@ -48,7 +48,7 @@ export default async function ManagePage({ searchParams }: { searchParams: Promi
             <div key={a.id} className="card overflow-hidden p-4">
               <div className="flex gap-3">
                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl"><Thumb imageUrl={c.product.imageUrl} art={ART_BY_CATEGORY(c.product.category)} className="h-16" svgClass="h-10 w-10" /></div>
-                <div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-2"><p className="truncate font-semibold text-ink">{c.title}</p><Pill label={applicationStatusLabel[a.status]} className={appStatusStyle[a.status]} /></div><p className="mt-0.5 truncate text-xs text-muted">{c.brand.name} ・ {rewardTypeLabel[c.rewardType]}</p></div>
+                <div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-2"><p className="min-w-0 flex-1 truncate font-semibold text-ink">{c.title}</p><Pill label={applicationStatusLabel[a.status]} className={appStatusStyle[a.status]} /></div><p className="mt-0.5 truncate text-xs text-muted">{c.brand.name} ・ {rewardTypeLabel[c.rewardType]}</p></div>
               </div>
               {tab === "todo" && <SubmitPostForm applicationId={a.id} defaultUrl={a.postUrl} defaultReach={a.postReach} />}
               {tab === "review" && <div className="mt-4 flex items-center gap-2 border-t border-line pt-4 text-xs text-muted"><Icon name="clock" className="h-4 w-4 text-amber-500" />運営が確認中・リーチ {num(a.postReach)}</div>}

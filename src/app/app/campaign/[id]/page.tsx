@@ -18,7 +18,7 @@ export default async function CampaignDetail({ params }: { params: Promise<{ id:
   const tags = parseTags(c.tags);
 
   return (
-    <div className="fade pb-28">
+    <div className="fade pb-8">
       <header className="sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <Link href="/app" className="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5"><Icon name="back" className="h-5 w-5" /></Link>
         <h1 className="display text-lg font-semibold text-ink">案件の詳細</h1>
@@ -49,14 +49,14 @@ export default async function CampaignDetail({ params }: { params: Promise<{ id:
         <div className="mt-4 flex items-center gap-2 rounded-2xl bg-canvas px-4 py-3 text-sm text-muted">
           <Icon name="user" className="h-4 w-4" /> これまで <b className="text-ink">{applied}</b> 名が応募
         </div>
-      </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-line bg-surface/90 p-4 backdrop-blur-xl" style={{ paddingBottom: "max(1rem,env(safe-area-inset-bottom))" }}>
-        {mine ? (
-          <div className="flex items-center justify-between"><span className="text-sm text-muted">応募状況</span><Pill label={applicationStatusLabel[mine.status]} className={appStatusStyle[mine.status]} /></div>
-        ) : (
-          <ApplyForm campaignId={c.id} />
-        )}
+        <div className="mt-6">
+          {mine ? (
+            <div className="flex items-center justify-between rounded-2xl border border-line bg-surface px-4 py-3.5"><span className="text-sm text-muted">応募状況</span><Pill label={applicationStatusLabel[mine.status]} className={appStatusStyle[mine.status]} /></div>
+          ) : (
+            <ApplyForm campaignId={c.id} />
+          )}
+        </div>
       </div>
     </div>
   );
