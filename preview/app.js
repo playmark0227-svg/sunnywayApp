@@ -35,7 +35,7 @@ function renderOnboarding() {
   const last = slide === SLIDES.length - 1;
   if (s.brand) {
     root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col items-center justify-center bg-sunrise px-8 text-center text-white">
-      <div class="pop">${sunMark("h-24 w-24 shadow-lift")}</div>
+      <div class="relative"><div class="spin-slow absolute -inset-6 rounded-full" style="background:conic-gradient(from 0deg, rgba(255,255,255,0), rgba(255,255,255,.4), rgba(255,255,255,0) 60%)"></div><div class="breathe pop relative">${sunMark("h-24 w-24 shadow-lift")}</div></div>
       <h1 class="display mt-7 text-4xl font-semibold tracking-wide">Sunnyway</h1>
       <p class="mt-3 text-white/85">${s.sub}</p>
       <div class="mt-12 flex gap-2">${dots()}</div>
@@ -84,13 +84,13 @@ function renderAuth() {
 // 本編（4タブ）
 // ============================================================
 function appShell(active, header, body) {
-  return `<div class="fade flex min-h-[100dvh] flex-col">${header}
+  return `<div class="screen-in flex min-h-[100dvh] flex-col">${header}
     <main class="flex-1 overflow-y-auto"><div class="mx-auto max-w-md">${body}</div></main>
     <nav class="sticky bottom-0 z-20 flex border-t border-line bg-surface/85 backdrop-blur-xl" style="padding-bottom:env(safe-area-inset-bottom)">
       ${navItem("#/", "search", "さがす", active === "search")}${navItem("#/manage", "bag", "案件管理", active === "manage")}${navItem("#/inbox", "chat", "メッセージ", active === "inbox")}${navItem("#/me", "user", "マイ", active === "me")}
     </nav></div>`;
 }
-const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="flex flex-1 flex-col items-center gap-1 py-2.5 ${on ? "text-sunny-600" : "text-muted"}">${ic(icon, "h-6 w-6")}<span class="text-[10px] font-medium tracking-wide">${label}</span></button>`;
+const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 pb-2 pt-2.5 ${on ? "text-sunny-600" : "text-muted"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all ${on ? "bg-sunny-50" : "scale-95"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide">${label}</span></button>`;
 const appHeader = (title, right) => `<header class="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))"><h1 class="display text-xl font-semibold text-ink">${title}</h1><div class="flex items-center gap-1">${right || ""}</div></header>`;
 const subHeader = (title, back) => `<header class="sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))">${iconBtn("back", "nav", `data-href="${back}"`)}<h1 class="display text-lg font-semibold text-ink">${title}</h1></header>`;
 const iconBtn = (icon, act, attrs = "") => `<button class="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5" data-act="${act}" ${attrs}>${ic(icon, "h-5 w-5")}</button>`;
@@ -111,8 +111,8 @@ function viewSearch() {
   const match = (c) => searchFilter === "すべて" ? true : searchFilter === "顔出し不要" ? c.tags.includes("顔出し不要") : searchFilter === "報酬あり" ? (c.rewardType === "PAID" || c.rewardType === "BOTH") : product(c.productId).category === searchFilter;
   const list = open.filter(match);
   const medias = [...new Set(list.map((c) => c.media))];
-  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display text-base font-semibold text-ink">${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="flex snap-x gap-4 overflow-x-auto px-5 pb-2">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
-  return `<div class="px-5 pt-1"><div class="relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift"><div class="absolute -right-6 -top-8 opacity-30">${ic("spark", "h-28 w-28", true)}</div><p class="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p><p class="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br>最大 ¥50,000</p><div class="mt-4 flex gap-1.5">${[0, 1, 2].map((i) => `<span class="h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}"></span>`).join("")}</div></div></div>
+  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display text-base font-semibold text-ink">${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="stagger flex snap-x gap-4 overflow-x-auto px-5 pb-2">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
+  return `<div class="px-5 pt-1"><div class="grad-move shine relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift"><div class="breathe absolute -right-6 -top-8 opacity-30">${ic("spark", "h-28 w-28", true)}</div><div class="float absolute bottom-4 right-6 opacity-50">${ic("spark", "h-6 w-6", true)}</div><p class="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p><p class="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br>最大 ¥50,000</p><div class="mt-4 flex gap-1.5">${[0, 1, 2].map((i) => `<span class="h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}"></span>`).join("")}</div></div></div>
     <div class="mt-4 flex gap-2 overflow-x-auto px-5 pb-1">${cats.map((c) => `<button data-act="filter" data-cat="${c}" class="chip whitespace-nowrap ${searchFilter === c ? "bg-ink text-white" : "border border-line bg-surface text-ink/70"}">${c}</button>`).join("")}</div>
     ${list.length ? groups : `<p class="px-5 py-20 text-center text-sm text-muted">条件に合う案件がありません</p>`}<div class="h-6"></div>`;
 }
@@ -122,7 +122,7 @@ function searchCard(c) {
   const fav = favsOf(ME).includes(c.id);
   const already = appsByInf(ME).some((a) => a.campaignId === c.id);
   const rewardTxt = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? yen(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
-  return `<article class="w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
+  return `<article class="tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
     <div class="relative"><button class="block w-full" data-act="open" data-id="${c.id}">${artTile(p, "h-44")}</button>${c.tags[0] ? `<span class="absolute left-3 top-3 badge bg-white/90 text-ink/80 backdrop-blur">${c.tags[0]}</span>` : ""}<button class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/85 backdrop-blur transition active:scale-90 ${fav ? "text-sunny-500" : "text-ink/40"}" data-act="fav" data-id="${c.id}">${ic("heart", "h-5 w-5", fav)}</button></div>
     <div class="p-4"><p class="text-[11px] font-semibold uppercase tracking-wider text-muted">${b.name}</p><h3 class="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-ink">${c.title}</h3>
       <div class="mt-3 flex items-center gap-1.5 text-sunny-600">${ic("spark", "h-4 w-4", true)}<span class="text-sm font-bold">${rewardTxt}</span></div>

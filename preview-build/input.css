@@ -113,3 +113,30 @@ body {
     background-position: -200% 0;
   }
 }
+
+/* ============ リッチ演出（本体と同期） ============ */
+html { -webkit-tap-highlight-color: transparent; }
+@media (max-width:768px){ body { overscroll-behavior-y: none; } }
+.screen-in { animation: screenIn .3s cubic-bezier(.22,1,.36,1); }
+@keyframes screenIn { from { opacity:0; transform: translate3d(0,12px,0) scale(.985);} to { opacity:1; transform:none;} }
+.tap { transition: transform .12s ease; touch-action: manipulation; }
+.tap:active { transform: scale(.975); }
+.reveal { opacity:0; animation: reveal .6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes reveal { from { opacity:0; transform: translateY(18px) scale(.97);} to { opacity:1; transform:none;} }
+.float { animation: float 4.5s ease-in-out infinite; }
+@keyframes float { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-6px);} }
+.breathe { animation: breathe 6s ease-in-out infinite; }
+@keyframes breathe { 0%,100%{ transform: scale(1); opacity:.9;} 50%{ transform: scale(1.08); opacity:1;} }
+.spin-slow { animation: spinSlow 22s linear infinite; }
+@keyframes spinSlow { to { transform: rotate(360deg);} }
+.grad-move { background-size:220% 220%; animation: gradMove 9s ease infinite; }
+@keyframes gradMove { 0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;} }
+.shine { position:relative; overflow:hidden; }
+.shine::after { content:""; position:absolute; inset:0; pointer-events:none; width:60%; transform:translateX(-180%) skewX(-18deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); animation:shine 4.2s ease-in-out infinite; }
+@keyframes shine { 0%{transform:translateX(-180%) skewX(-18deg);}55%,100%{transform:translateX(360%) skewX(-18deg);} }
+.stagger > * { opacity:0; animation: reveal .6s cubic-bezier(.22,1,.36,1) both; }
+.stagger > *:nth-child(2){animation-delay:.08s}.stagger > *:nth-child(3){animation-delay:.16s}.stagger > *:nth-child(4){animation-delay:.24s}.stagger > *:nth-child(5){animation-delay:.32s}
+.btn-primary { position:relative; overflow:hidden; }
+.btn-primary::after { content:""; position:absolute; top:0; left:0; height:100%; width:45%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent); transform:translateX(-220%) skewX(-18deg); transition:transform .55s ease; pointer-events:none; }
+.btn-primary:hover::after,.btn-primary:active::after { transform:translateX(340%) skewX(-18deg); }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; } }
