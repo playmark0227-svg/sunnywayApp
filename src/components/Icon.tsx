@@ -115,7 +115,7 @@ export function Thumb({ imageUrl, art, className = "h-44", svgClass = "h-24 w-24
     return (
       <div className={`relative w-full overflow-hidden ${className}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+        <img src={imageUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
       </div>
     );
   }

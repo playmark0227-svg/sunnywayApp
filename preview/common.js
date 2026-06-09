@@ -49,7 +49,7 @@ const ART = {
 };
 function artTile(p, hClass) {
   if (p.image) {
-    return `<div class="relative ${hClass} w-full overflow-hidden"><img src="${p.image}" alt="" class="h-full w-full object-cover"></div>`;
+    return `<div class="relative ${hClass} w-full overflow-hidden"><img src="${p.image}" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover"></div>`;
   }
   return `<div class="relative ${hClass} w-full overflow-hidden" style="background:${p.tint}">
     <div class="absolute right-3 top-3 h-10 w-10 rounded-full bg-white/35"></div>
