@@ -1,53 +1,34 @@
-import { statusBadgeClass } from "@/lib/labels";
+import { campaignStatusStyle, appStatusStyle, campaignStatusLabel, applicationStatusLabel } from "@/lib/labels";
 
-export function PageHeader({
-  title,
-  description,
-  action,
-}: {
-  title: string;
-  description?: string;
-  action?: React.ReactNode;
-}) {
+export function PageHeader({ title, description, action }: { title: string; description?: string; action?: React.ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+    <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-        {description && (
-          <p className="mt-1 text-sm text-gray-500">{description}</p>
-        )}
+        <h1 className="display text-3xl font-semibold text-ink">{title}</h1>
+        {description && <p className="mt-1.5 text-sm text-muted">{description}</p>}
       </div>
       {action}
     </div>
   );
 }
 
-export function Stat({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string | number;
-  sub?: string;
-}) {
+export function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="card p-5">
-      <div className="text-sm text-gray-500">{label}</div>
-      <div className="mt-1 text-3xl font-bold text-gray-900">{value}</div>
-      {sub && <div className="mt-1 text-xs text-gray-400">{sub}</div>}
+    <div className="card p-6">
+      <div className="text-xs font-medium uppercase tracking-wider text-muted">{label}</div>
+      <div className="display mt-2 text-3xl font-semibold text-ink">{value}</div>
+      {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
     </div>
   );
 }
 
-export function StatusBadge({ status, label }: { status: string; label: string }) {
-  return <span className={`badge ${statusBadgeClass(status)}`}>{label}</span>;
+export function CampaignBadge({ status }: { status: string }) {
+  return <span className={`badge ${campaignStatusStyle[status]}`}>{campaignStatusLabel[status]}</span>;
+}
+export function AppBadge({ status }: { status: string }) {
+  return <span className={`badge ${appStatusStyle[status]}`}>{applicationStatusLabel[status]}</span>;
 }
 
 export function EmptyState({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="card flex flex-col items-center justify-center gap-2 p-10 text-center text-sm text-gray-500">
-      {children}
-    </div>
-  );
+  return <div className="card flex flex-col items-center justify-center gap-2 p-12 text-center text-sm text-muted">{children}</div>;
 }

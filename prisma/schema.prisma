@@ -52,12 +52,45 @@ model InfluencerProfile {
   bio         String   @default("")
   // ギフティング(現物提供)用の発送先。金銭報酬のみなら未設定でも可。
   shippingAddress String @default("")
+  // 金銭報酬の振込先
+  bank        String   @default("")
+  igLinked    Boolean  @default(false)  // Instagram 連携済み
+  ttLinked    Boolean  @default(false)  // TikTok 連携済み
+  notify      Boolean  @default(false)  // プッシュ通知
+  favorites   String   @default("")     // お気に入りキャンペーンid（カンマ区切り）
   verified    Boolean  @default(false)  // 運営による本人/実績確認済みか
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   applications Application[]
+  transactions Transaction[]
+  messages     Message[]
+}
+
+// ===== 取引（報酬の振込）=====
+model Transaction {
+  id           String   @id @default(cuid())
+  influencerId String
+  influencer   InfluencerProfile @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  campaignId   String   @default("")
+  amountYen    Int
+  status       String   @default("振込済み") // 振込予定 / 振込済み
+  createdAt    DateTime @default(now())
+
+  @@index([influencerId])
+}
+
+// ===== お問い合わせ（運営とのメッセージ）=====
+model Message {
+  id           String   @id @default(cuid())
+  influencerId String
+  influencer   InfluencerProfile @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  fromStaff    Boolean  @default(false) // true=運営, false=インフルエンサー
+  text         String
+  createdAt    DateTime @default(now())
+
+  @@index([influencerId])
 }
 
 // ===== ブランド・商品（運営が管理するデータ）=====
@@ -111,6 +144,7 @@ enum RewardType {
   GIFTING // 現物提供(ギフティング)
   PAID    // 金銭報酬(固定/成果)
   BOTH    // 現物 + 金銭の併用
+  OTHER   // その他(イベント招待など)
 }
 
 enum CampaignStatus {
@@ -131,8 +165,14 @@ model Campaign {
   brief       String   @default("")        // 依頼内容・投稿条件
   status      CampaignStatus @default(DRAFT)
 
+  // さがす画面の表示用
+  media       String   @default("Instagram Feed") // Instagram Feed / Instagram Reels / TikTok
+  tags        String   @default("")        // 条件タグ（顔出し不要 等）カンマ区切り
+  appliedBase Int      @default(0)          // 表示上の応募数ベース（実応募数に加算）
+  deadline    String   @default("")         // 募集終了日（表示用）
+
   // 「何人のインフルエンサーが取り上げます」の目標人数
-  targetInfluencers Int @default(10)
+  targetInfluencers Int @default(10)        // ＝ 募集人数
 
   // 報酬設計
   rewardType  RewardType @default(GIFTING)
@@ -156,9 +196,10 @@ model Campaign {
 
 enum ApplicationStatus {
   APPLIED   // 応募済み
-  APPROVED  // 運営が承認（参加確定）
-  REJECTED  // 却下
-  POSTED    // 投稿提出済み
+  APPROVED  // 採用（やること：投稿待ち）
+  SUBMITTED // 投稿提出済み（運営チェック中）
+  COMPLETED // 完了（運営確認済み・報酬確定）
+  REJECTED  // 見送り
 }
 
 model Application {

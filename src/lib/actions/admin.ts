@@ -71,10 +71,13 @@ const campaignSchema = z.object({
   title: z.string().min(1, "タイトルを入力してください"),
   brief: z.string().optional().default(""),
   targetInfluencers: z.coerce.number().int().min(1, "目標人数は1以上"),
-  rewardType: z.enum(["GIFTING", "PAID", "BOTH"]),
+  rewardType: z.enum(["GIFTING", "PAID", "BOTH", "OTHER"]),
   rewardYen: z.coerce.number().int().min(0).default(0),
   campaignFeeYen: z.coerce.number().int().min(0).default(0),
   salesCommissionPct: z.coerce.number().int().min(0).max(100).default(0),
+  media: z.string().default("Instagram Feed"),
+  tags: z.string().optional().default(""),
+  deadline: z.string().optional().default(""),
   // チェックボックス（複数選択）。FormData からは getAll で受ける
   billingModels: z.array(z.string()).min(1, "収益モデルを1つ以上選択"),
 });
@@ -111,6 +114,9 @@ export async function createCampaignAction(
       billingModels: parsed.data.billingModels.join(","),
       campaignFeeYen: parsed.data.campaignFeeYen,
       salesCommissionPct: parsed.data.salesCommissionPct,
+      media: parsed.data.media,
+      tags: parsed.data.tags,
+      deadline: parsed.data.deadline,
       status: "OPEN", // 作成と同時に募集開始
     },
   });
@@ -171,5 +177,41 @@ export async function decideApplicationAction(formData: FormData): Promise<void>
     target: parsed.data.applicationId,
     meta: { decision: parsed.data.decision },
   });
+  revalidatePath(`/admin/campaigns/${app.campaignId}`);
+}
+
+/** 投稿の確認OK → 完了。金銭報酬なら取引(振込)を生成する。 */
+export async function confirmApplicationAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("applicationId") ?? "");
+  if (!id) return;
+  const app = await prisma.application.findUnique({
+    where: { id },
+    include: { campaign: { select: { id: true, rewardType: true, rewardYen: true } } },
+  });
+  if (!app || app.status !== "SUBMITTED") return;
+
+  await prisma.application.update({ where: { id }, data: { status: "COMPLETED" } });
+
+  const c = app.campaign;
+  if ((c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0) {
+    const exists = await prisma.transaction.findFirst({ where: { influencerId: app.influencerId, campaignId: c.id } });
+    if (!exists) {
+      await prisma.transaction.create({ data: { influencerId: app.influencerId, campaignId: c.id, amountYen: c.rewardYen, status: "振込済み" } });
+    }
+    await recordAudit({ actorId: admin.userId, action: "payout.complete", target: id, meta: { amountYen: c.rewardYen } });
+  } else {
+    await recordAudit({ actorId: admin.userId, action: "application.complete", target: id });
+  }
+  revalidatePath(`/admin/campaigns/${c.id}`);
+}
+
+/** 差し戻し（SUBMITTED → APPROVED）。 */
+export async function sendbackApplicationAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("applicationId") ?? "");
+  if (!id) return;
+  const app = await prisma.application.update({ where: { id }, data: { status: "APPROVED" }, select: { campaignId: true } });
+  await recordAudit({ actorId: admin.userId, action: "application.sendback", target: id });
   revalidatePath(`/admin/campaigns/${app.campaignId}`);
 }

@@ -89,11 +89,11 @@ export async function requireAdmin(): Promise<SessionPayload> {
   return session;
 }
 
-/** INFLUENCER 必須。未ログイン/権限不足はインフルエンサーログインへリダイレクト。 */
+/** INFLUENCER 必須。未ログイン/権限不足はアプリ入口（オンボーディング/ログイン）へ。 */
 export async function requireInfluencer(): Promise<SessionPayload> {
   const session = await getSession();
   if (!session || session.role !== "INFLUENCER") {
-    redirect("/influencer/login");
+    redirect("/");
   }
   return session;
 }

@@ -32,12 +32,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // インフルエンサーアプリ: INFLUENCER 以外はインフルログインへ
+  // インフルエンサーアプリ: INFLUENCER 以外はアプリ入口へ
   if (pathname.startsWith("/app")) {
     if (role !== "INFLUENCER") {
       const url = req.nextUrl.clone();
-      url.pathname = "/influencer/login";
-      url.searchParams.set("next", pathname);
+      url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }
