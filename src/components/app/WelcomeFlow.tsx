@@ -10,7 +10,7 @@ import {
 } from "@/lib/actions/auth";
 
 const SLIDES = [
-  { brand: true, sub: "好きなコスメで、つながる。" },
+  { brand: true, sub: "サプライズを起こし続けよう。" },
   { art: "serum", icon: "heart", tint: "linear-gradient(135deg,#FDEFE7,#FBE6EC)", title: "好きなコスメに、出会う。", sub: "あなたに合った案件が、毎日届く。" },
   { art: "lipstick", icon: "send", tint: "linear-gradient(135deg,#FBE6EC,#F6DCEA)", title: "応募して、投稿するだけ。", sub: "面倒な手続きはなし。スマホひとつで完結。" },
   { art: "jar", icon: "receipt", tint: "linear-gradient(135deg,#F4EFE6,#FBEFD9)", title: "報酬は、まっすぐ届く。", sub: "ギフティングも金銭報酬も、振込まで一元管理。" },
