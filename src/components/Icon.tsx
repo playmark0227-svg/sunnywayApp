@@ -48,10 +48,12 @@ export function Icon({
   );
 }
 
+// ブランドロゴ＝公式マスコット（HPの assets/mascot.png）を円形バッジで表示
 export function SunMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
-    <span className={`inline-grid shrink-0 place-items-center overflow-hidden rounded-full bg-sunrise text-white ${className}`}>
-      <Icon name="sun" className="h-[58%] w-[58%]" />
+    <span className={`grid shrink-0 place-items-center overflow-hidden rounded-full bg-white shadow-soft ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/mascot.png" alt="Sunnyway" className="h-[82%] w-[82%] object-contain" />
     </span>
   );
 }
