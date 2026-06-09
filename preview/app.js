@@ -84,13 +84,15 @@ function renderAuth() {
 // 本編（4タブ）
 // ============================================================
 function appShell(active, header, body) {
-  return `<div class="screen-in flex min-h-[100dvh] flex-col">${header}
-    <main class="flex-1 overflow-y-auto"><div class="mx-auto max-w-md">${body}</div></main>
-    <nav class="sticky bottom-0 z-20 flex border-t border-line bg-surface/85 backdrop-blur-xl" style="padding-bottom:env(safe-area-inset-bottom)">
-      ${navItem("#/", "search", "さがす", active === "search")}${navItem("#/manage", "bag", "案件管理", active === "manage")}${navItem("#/inbox", "chat", "メッセージ", active === "inbox")}${navItem("#/me", "user", "マイ", active === "me")}
-    </nav></div>`;
+  const items = `${navItem("#/", "search", "さがす", active === "search")}${navItem("#/manage", "bag", "案件管理", active === "manage")}${navItem("#/inbox", "chat", "メッセージ", active === "inbox")}${navItem("#/me", "user", "マイ", active === "me")}`;
+  const nav = `<nav class="flex shrink-0 border-t border-line bg-surface/85 backdrop-blur-xl md:w-[84px] md:flex-col md:border-r md:border-t-0 lg:w-60" style="padding-bottom:env(safe-area-inset-bottom)">
+    <button class="hidden items-center gap-2 px-4 py-5 md:flex md:justify-center lg:justify-start" data-act="nav" data-href="#/">${sunMark("h-9 w-9")}<span class="display hidden text-lg font-bold text-ink lg:inline">Sunnyway</span></button>
+    <div class="flex flex-1 md:flex-none md:flex-col md:gap-1 md:px-3">${items}</div></nav>`;
+  return `<div class="screen-in flex min-h-[100dvh] flex-col md:flex-row-reverse">
+    <div class="flex min-h-0 flex-1 flex-col">${header}<main class="flex-1 overflow-y-auto"><div class="mx-auto max-w-md md:max-w-3xl lg:max-w-5xl">${body}</div></main></div>
+    ${nav}</div>`;
 }
-const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 pb-2 pt-2.5 ${on ? "text-sunny-600" : "text-muted"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all ${on ? "bg-sunny-50" : "scale-95"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide">${label}</span></button>`;
+const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 py-2.5 md:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:py-3 ${on ? "text-sunny-600 lg:bg-sunny-50" : "text-muted lg:hover:bg-canvas"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise lg:hidden"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunny-50 lg:bg-transparent" : "scale-95 lg:scale-100"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide lg:text-sm">${label}</span></button>`;
 const appHeader = (title, right) => `<header class="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))"><h1 class="display text-xl font-semibold text-ink">${title}</h1><div class="flex items-center gap-1">${right || ""}</div></header>`;
 const subHeader = (title, back) => `<header class="sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))">${iconBtn("back", "nav", `data-href="${back}"`)}<h1 class="display text-lg font-semibold text-ink">${title}</h1></header>`;
 const iconBtn = (icon, act, attrs = "") => `<button class="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5" data-act="${act}" ${attrs}>${ic(icon, "h-5 w-5")}</button>`;
@@ -111,7 +113,7 @@ function viewSearch() {
   const match = (c) => searchFilter === "すべて" ? true : searchFilter === "顔出し不要" ? c.tags.includes("顔出し不要") : searchFilter === "報酬あり" ? (c.rewardType === "PAID" || c.rewardType === "BOTH") : product(c.productId).category === searchFilter;
   const list = open.filter(match);
   const medias = [...new Set(list.map((c) => c.media))];
-  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display text-base font-semibold text-ink">${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="stagger flex snap-x gap-4 overflow-x-auto px-5 pb-2">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
+  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display text-base font-semibold text-ink">${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="stagger flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
   return `<div class="px-5 pt-1"><div class="grad-move shine relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift"><div class="breathe absolute -right-6 -top-8 opacity-30">${ic("spark", "h-28 w-28", true)}</div><div class="float absolute bottom-4 right-6 opacity-50">${ic("spark", "h-6 w-6", true)}</div><p class="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p><p class="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br>最大 ¥50,000</p><div class="mt-4 flex gap-1.5">${[0, 1, 2].map((i) => `<span class="h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}"></span>`).join("")}</div></div></div>
     <div class="mt-4 flex gap-2 overflow-x-auto px-5 pb-1">${cats.map((c) => `<button data-act="filter" data-cat="${c}" class="chip whitespace-nowrap ${searchFilter === c ? "bg-ink text-white" : "border border-line bg-surface text-ink/70"}">${c}</button>`).join("")}</div>
     ${list.length ? groups : `<p class="px-5 py-20 text-center text-sm text-muted">条件に合う案件がありません</p>`}<div class="h-6"></div>`;
@@ -122,7 +124,7 @@ function searchCard(c) {
   const fav = favsOf(ME).includes(c.id);
   const already = appsByInf(ME).some((a) => a.campaignId === c.id);
   const rewardTxt = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? yen(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
-  return `<article class="tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
+  return `<article class="tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl md:w-auto md:shrink border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
     <div class="relative"><button class="block w-full" data-act="open" data-id="${c.id}">${artTile(p, "h-44")}</button>${c.tags[0] ? `<span class="absolute left-3 top-3 badge bg-white/90 text-ink/80 backdrop-blur">${c.tags[0]}</span>` : ""}<button class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/85 backdrop-blur transition active:scale-90 ${fav ? "text-sunny-500" : "text-ink/40"}" data-act="fav" data-id="${c.id}">${ic("heart", "h-5 w-5", fav)}</button></div>
     <div class="p-4"><p class="text-[11px] font-semibold uppercase tracking-wider text-muted">${b.name}</p><h3 class="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-ink">${c.title}</h3>
       <div class="mt-3 flex items-center gap-1.5 text-sunny-600">${ic("spark", "h-4 w-4", true)}<span class="text-sm font-bold">${rewardTxt}</span></div>
@@ -137,7 +139,7 @@ function viewManage() {
   const buckets = { todo: apps.filter((a) => a.status === "APPROVED"), review: apps.filter((a) => a.status === "SUBMITTED"), done: apps.filter((a) => a.status === "COMPLETED") };
   const cur = buckets[mgTab];
   const body = cur.length ? cur.map((a) => manageCard(a, mgTab)).join("") : emptyState(mgTab === "todo" ? "やることはありません" : mgTab === "review" ? "確認待ちの案件はありません" : "完了した案件はありません");
-  return `<div class="px-5 pt-1"><div class="flex rounded-full bg-ink/5 p-1">${tabs.map(([k, label]) => `<button data-act="mgtab" data-tab="${k}" class="flex-1 rounded-full py-2 text-sm font-semibold transition ${mgTab === k ? "bg-surface text-ink shadow-soft" : "text-ink/50"}">${label}${buckets[k].length ? ` ${buckets[k].length}` : ""}</button>`).join("")}</div></div><div class="space-y-3 p-5">${body}</div>`;
+  return `<div class="px-5 pt-1"><div class="flex rounded-full bg-ink/5 p-1">${tabs.map(([k, label]) => `<button data-act="mgtab" data-tab="${k}" class="flex-1 rounded-full py-2 text-sm font-semibold transition ${mgTab === k ? "bg-surface text-ink shadow-soft" : "text-ink/50"}">${label}${buckets[k].length ? ` ${buckets[k].length}` : ""}</button>`).join("")}</div></div><div class="space-y-3 p-5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">${body}</div>`;
 }
 function manageCard(a, tab) {
   const c = campaign(a.campaignId), p = product(c.productId), b = brand(c.brandId);
@@ -145,7 +147,7 @@ function manageCard(a, tab) {
   if (tab === "todo") action = `<div class="mt-4 space-y-2 border-t border-line pt-4"><p class="text-xs font-semibold text-muted">投稿 URL を提出</p><input class="input" id="url-${a.id}" placeholder="https://www.instagram.com/p/…" value="${a.postUrl}"><input class="input" id="reach-${a.id}" type="number" min="0" placeholder="リーチ / 表示回数" value="${a.postReach || ""}"><button class="btn-primary w-full" data-act="submit" data-id="${a.id}">提出する</button></div>`;
   else if (tab === "review") action = `<div class="mt-4 flex items-center gap-2 border-t border-line pt-4 text-xs text-muted">${ic("check", "h-4 w-4 text-amber-500")}運営が確認中・リーチ ${fmt(a.postReach)}</div>`;
   else { const tx = S.transactions.find((t) => t.campaignId === a.campaignId && t.influencerId === a.influencerId); action = `<div class="mt-4 flex items-center gap-2 border-t border-line pt-4 text-xs text-ink/70">${ic("check", "h-4 w-4 text-sunny-500")}完了・リーチ ${fmt(a.postReach)}${tx ? ` ・ 報酬 ${yen(tx.amountYen)}` : c.rewardType === "GIFTING" ? " ・ 現物提供" : ""}</div>`; }
-  return `<div class="card overflow-hidden p-4"><div class="flex gap-3"><div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl">${artTile(p, "h-16")}</div><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><p class="truncate font-semibold text-ink">${c.title}</p>${pill(ASTATUS[a.status], ASTYLE[a.status])}</div><p class="mt-0.5 truncate text-xs text-muted">${b.name} ・ ${REWARD[c.rewardType]}</p></div></div>${action}</div>`;
+  return `<div class="card overflow-hidden p-4"><div class="flex gap-3"><div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl">${artTile(p, "h-16")}</div><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><p class="min-w-0 flex-1 truncate font-semibold text-ink">${c.title}</p>${pill(ASTATUS[a.status], ASTYLE[a.status])}</div><p class="mt-0.5 truncate text-xs text-muted">${b.name} ・ ${REWARD[c.rewardType]}</p></div></div>${action}</div>`;
 }
 function emptyState(msg) {
   return `<div class="flex flex-col items-center justify-center gap-4 py-20 text-center"><div class="grid h-16 w-16 place-items-center rounded-full bg-sunny-50 text-sunny-300">${ic("bag", "h-8 w-8")}</div><p class="text-sm text-muted">${msg}</p><button class="btn-soft" data-act="nav" data-href="#/">案件をさがす</button></div>`;
@@ -161,7 +163,7 @@ function viewInbox() {
   const msgs = S.inbox.map((m) => m.from === "me"
     ? `<div class="flex justify-end"><div class="max-w-[78%] rounded-2xl rounded-br-md bg-sunny-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-soft">${m.text}</div></div>`
     : `<div class="flex items-end gap-2">${sunMark("h-7 w-7")}<div class="max-w-[78%] rounded-2xl rounded-bl-md border border-line bg-surface px-4 py-2.5 text-sm leading-relaxed text-ink">${m.text}</div></div>`).join("");
-  return `<div class="flex h-[calc(100dvh-7.5rem)] flex-col"><div class="flex items-center gap-2 border-b border-line px-5 py-2.5 text-sm font-semibold text-ink">${sunMark("h-6 w-6")} Sunnyway 公式</div>
+  return `<div class="flex h-[calc(100dvh-7.5rem)] flex-col md:h-[calc(100dvh-3.5rem)]"><div class="flex items-center gap-2 border-b border-line px-5 py-2.5 text-sm font-semibold text-ink">${sunMark("h-6 w-6")} Sunnyway 公式</div>
     <div class="flex-1 space-y-4 overflow-y-auto px-5 py-5">${msgs}</div>
     <div class="flex items-center gap-2 border-t border-line bg-surface p-3" style="padding-bottom:max(0.75rem,env(safe-area-inset-bottom))"><input class="input flex-1 rounded-full" id="chat-input" placeholder="メッセージを入力…"><button class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sunny-500 text-white shadow-lift active:scale-95" data-act="send">${ic("send", "h-5 w-5")}</button></div></div>`;
 }
