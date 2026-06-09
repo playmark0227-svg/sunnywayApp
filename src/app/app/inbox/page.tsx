@@ -9,7 +9,7 @@ export default async function InboxPage() {
   const messages = await prisma.message.findMany({ where: { influencerId: profile!.id }, orderBy: { createdAt: "asc" } });
 
   return (
-    <div className="flex flex-col" style={{ height: "calc(100dvh - 4.5rem - env(safe-area-inset-bottom))" }}>
+    <div className="flex h-[calc(100dvh-4.5rem-env(safe-area-inset-bottom))] flex-col md:h-[100dvh]">
       <header className="flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <h1 className="display text-xl font-semibold text-ink">メッセージ</h1>
       </header>

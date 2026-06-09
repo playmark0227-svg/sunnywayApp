@@ -34,9 +34,9 @@ export default async function ManagePage({ searchParams }: { searchParams: Promi
         ))}
       </div></div>
 
-      <div className="space-y-3 p-5">
+      <div className="space-y-3 p-5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
         {cur.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+          <div className="flex flex-col items-center justify-center gap-4 py-20 text-center md:col-span-2">
             <div className="grid h-16 w-16 place-items-center rounded-full bg-sunny-50 text-sunny-300"><Icon name="bag" className="h-8 w-8" /></div>
             <p className="text-sm text-muted">{tab === "todo" ? "やることはありません" : tab === "review" ? "確認待ちの案件はありません" : "完了した案件はありません"}</p>
             <Link href="/app" className="btn-soft">案件をさがす</Link>

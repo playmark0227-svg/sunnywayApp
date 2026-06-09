@@ -62,7 +62,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         medias.map((mediaName) => (
           <section key={mediaName} className="mt-7">
             <div className="mb-3 flex items-baseline justify-between px-5"><h2 className="display text-base font-semibold text-ink">{mediaName}</h2><span className="text-xs text-muted">{list.filter((c) => c.media === mediaName).length}件</span></div>
-            <div className="flex snap-x gap-4 overflow-x-auto px-5 pb-2">
+            <div className="flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
               {list.filter((c) => c.media === mediaName).map((c, i) => {
                 const art = ART_BY_CATEGORY(c.product.category);
                 const applied = c.appliedBase + c._count.applications;
@@ -70,7 +70,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 const tags = parseTags(c.tags);
                 const reward = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? "¥" + num(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
                 return (
-                  <article key={c.id} style={{ animationDelay: `${i * 80}ms` }} className="reveal tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft">
+                  <article key={c.id} style={{ animationDelay: `${i * 80}ms` }} className="reveal tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft md:w-auto md:shrink">
                     <div className="relative">
                       <Link href={`/app/campaign/${c.id}`} className="block"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-44" /></Link>
                       {tags[0] && <span className="badge absolute left-3 top-3 bg-white/90 text-ink/80 backdrop-blur">{tags[0]}</span>}
