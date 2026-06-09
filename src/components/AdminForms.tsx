@@ -25,6 +25,46 @@ function useResetOnOk(s: FormState, ref: React.RefObject<HTMLFormElement | null>
   useEffect(() => { if (s?.ok) ref.current?.reset(); }, [s, ref]);
 }
 
+function ImageUpload() {
+  const [url, setUrl] = useState("");
+  const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 640;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, w, h);
+        setUrl(canvas.toDataURL("image/jpeg", 0.78));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+  return (
+    <div>
+      <label className="label">商品画像</label>
+      <input type="hidden" name="imageUrl" value={url} />
+      <div className="flex items-center gap-3">
+        <label className="grid h-20 w-20 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-2xl border border-dashed border-line bg-canvas text-muted">
+          {url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={url} alt="" className="h-full w-full object-cover" />
+          ) : <Icon name="plus" className="h-6 w-6" />}
+          <input type="file" accept="image/*" className="hidden" onChange={onPick} />
+        </label>
+        <p className="text-xs text-muted">タップして写真を選択<br />（自動で軽量化されます）</p>
+        {url && <button type="button" onClick={() => setUrl("")} className="ml-auto text-xs text-rose-500">削除</button>}
+      </div>
+    </div>
+  );
+}
+
 export function BrandForm() {
   const ref = useRef<HTMLFormElement>(null);
   const [state, action] = useActionState<FormState, FormData>(createBrandAction, undefined);
@@ -59,6 +99,7 @@ export function ProductForm({ brands }: { brands: { id: string; name: string }[]
           <div><label className="label">カテゴリ</label><select name="category" className="input" defaultValue="スキンケア"><option>スキンケア</option><option>メイクアップ</option><option>ヘアケア</option><option>その他</option></select></div>
         </div>
         <div><label className="label">商品名 *</label><input name="name" className="input" required /></div>
+        <ImageUpload />
         <div><label className="label">説明</label><input name="description" className="input" /></div>
         <div><label className="label">小売価格（円）</label><input name="retailPriceYen" type="number" min={0} defaultValue={0} className="input" /></div>
         <SubmitButton className="btn-primary w-full">登録する</SubmitButton>

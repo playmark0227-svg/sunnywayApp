@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // 管理操作のレスポンスにキャッシュを残さない等、必要な調整はここに集約する
+  // Docker 等での自己ホスト用に最小ランタイムを出力
+  output: "standalone",
   eslint: {
     ignoreDuringBuilds: true,
   },

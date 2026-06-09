@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireInfluencer } from "@/lib/auth";
-import { Icon, ArtTile, ART_BY_CATEGORY, Pill } from "@/components/Icon";
+import { Icon, Thumb, ART_BY_CATEGORY, Pill } from "@/components/Icon";
 import { ApplyForm } from "@/components/app/forms";
 import { rewardTypeLabel, applicationStatusLabel, appStatusStyle, num, parseTags, yen } from "@/lib/labels";
 
@@ -25,7 +25,7 @@ export default async function CampaignDetail({ params }: { params: Promise<{ id:
       </header>
 
       <div className="px-5">
-        <div className="overflow-hidden rounded-3xl border border-line"><ArtTile art={art} className="h-60" svgClass="h-32 w-32" /></div>
+        <div className="overflow-hidden rounded-3xl border border-line"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-60" svgClass="h-32 w-32" /></div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Pill label={rewardTypeLabel[c.rewardType]} className="bg-sunny-50 text-sunny-700" />
           {tags.map((t) => <Pill key={t} label={t} className="bg-ink/5 text-ink/60" />)}

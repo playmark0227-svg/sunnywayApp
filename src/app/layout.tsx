@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Zen_Kaku_Gothic_New, Shippori_Mincho } from "next/font/google";
 import "./globals.css";
+import { PwaRegister } from "@/components/PwaRegister";
 
 const sans = Zen_Kaku_Gothic_New({
   subsets: ["latin"],
@@ -18,6 +19,9 @@ const display = Shippori_Mincho({
 export const metadata: Metadata = {
   title: "Sunnyway",
   description: "コスメと、出会う。Sunnyway — ブランドとインフルエンサーのためのプラットフォーム",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Sunnyway", statusBarStyle: "default" },
+  icons: { icon: "/icon-192.png", apple: "/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {
@@ -30,7 +34,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" className={`${sans.variable} ${display.variable}`}>
-      <body>{children}</body>
+      <body>{children}<PwaRegister /></body>
     </html>
   );
 }

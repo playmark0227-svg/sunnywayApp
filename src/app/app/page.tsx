@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireInfluencer } from "@/lib/auth";
-import { Icon, ArtTile, ART_BY_CATEGORY } from "@/components/Icon";
+import { Icon, Thumb, ART_BY_CATEGORY } from "@/components/Icon";
 import { ApplyForm, FavoriteButton } from "@/components/app/forms";
 import { rewardTypeLabel, num, parseTags } from "@/lib/labels";
 
@@ -20,6 +20,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   });
   const myApps = await prisma.application.findMany({ where: { influencerId: profile!.id }, select: { campaignId: true } });
   const appliedIds = new Set(myApps.map((a) => a.campaignId));
+  const unread = await prisma.notification.count({ where: { influencerId: profile!.id, read: false } });
 
   const match = (c: (typeof campaigns)[number]) =>
     cat === "すべて" ? true
@@ -33,7 +34,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     <div className="fade">
       <header className="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <h1 className="display text-xl font-semibold text-ink">さがす</h1>
-        <Link href="/app/inbox" className="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5"><Icon name="bell" className="h-5 w-5" /></Link>
+        <Link href="/app/notifications" className="relative grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5">
+          <Icon name="bell" className="h-5 w-5" />
+          {unread > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-sunny-500 px-1 text-[10px] font-bold text-white">{unread}</span>}
+        </Link>
       </header>
 
       <div className="px-5 pt-1">
@@ -67,7 +71,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 return (
                   <article key={c.id} className="w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft">
                     <div className="relative">
-                      <Link href={`/app/campaign/${c.id}`} className="block"><ArtTile art={art} className="h-44" /></Link>
+                      <Link href={`/app/campaign/${c.id}`} className="block"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-44" /></Link>
                       {tags[0] && <span className="badge absolute left-3 top-3 bg-white/90 text-ink/80 backdrop-blur">{tags[0]}</span>}
                       <FavoriteButton campaignId={c.id} fav={favs.has(c.id)} />
                     </div>

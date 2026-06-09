@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 seeding…");
+  await prisma.notification.deleteMany();
   await prisma.message.deleteMany();
   await prisma.transaction.deleteMany();
   await prisma.auditLog.deleteMany();
@@ -105,6 +106,12 @@ async function main() {
 
   await prisma.transaction.create({ data: { influencerId: aoi.id, campaignId: c2.id, amountYen: 5000, status: "振込済み" } });
   await prisma.message.create({ data: { influencerId: aoi.id, fromStaff: true, text: "Sunnyway へようこそ。ご不明な点はお気軽にどうぞ。" } });
+  await prisma.notification.createMany({
+    data: [
+      { influencerId: aoi.id, text: "案件が完了しました。報酬 ¥5,000 を振り込みました。", href: "/app/me/transactions", read: false },
+      { influencerId: aoi.id, text: "「グロウ セラム C を2週間レビュー」に採用されました。", href: "/app/manage", read: true },
+    ],
+  });
   await prisma.auditLog.createMany({
     data: [
       { actorId: admin.id, action: "campaign.create", target: c1.id },

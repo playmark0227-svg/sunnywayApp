@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, EmptyState, CampaignBadge } from "@/components/ui";
-import { ArtTile, ART_BY_CATEGORY, Icon } from "@/components/Icon";
+import { Thumb, ART_BY_CATEGORY, Icon } from "@/components/Icon";
 import { CampaignForm } from "@/components/AdminForms";
 import { rewardTypeLabel } from "@/lib/labels";
 
@@ -28,7 +28,7 @@ export default async function CampaignsPage() {
             const pct = Math.min(100, Math.round((posted / Math.max(1, c.targetInfluencers)) * 100));
             return (
               <Link key={c.id} href={`/admin/campaigns/${c.id}`} className="card flex items-center gap-4 p-4 transition hover:shadow-card">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl"><ArtTile art={ART_BY_CATEGORY(c.product.category)} className="h-16" svgClass="h-10 w-10" /></div>
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl"><Thumb imageUrl={c.product.imageUrl} art={ART_BY_CATEGORY(c.product.category)} className="h-16" svgClass="h-10 w-10" /></div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2"><h3 className="truncate font-semibold text-ink">{c.title}</h3><CampaignBadge status={c.status} /></div>
                   <p className="mt-0.5 truncate text-sm text-muted">{c.brand.name} ・ {rewardTypeLabel[c.rewardType]}</p>

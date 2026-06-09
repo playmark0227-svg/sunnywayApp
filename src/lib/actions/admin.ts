@@ -42,7 +42,7 @@ const productSchema = z.object({
   name: z.string().min(1, "商品名を入力してください"),
   category: z.string().default("スキンケア"),
   description: z.string().optional().default(""),
-  imageUrl: z.string().optional().default(""),
+  imageUrl: z.string().max(3_000_000, "画像が大きすぎます").optional().default(""),
   retailPriceYen: z.coerce.number().int().min(0).default(0),
 });
 
@@ -169,8 +169,13 @@ export async function decideApplicationAction(formData: FormData): Promise<void>
   const app = await prisma.application.update({
     where: { id: parsed.data.applicationId },
     data: { status: parsed.data.decision },
-    select: { campaignId: true },
+    select: { campaignId: true, influencerId: true, campaign: { select: { title: true } } },
   });
+  if (parsed.data.decision === "APPROVED") {
+    await prisma.notification.create({
+      data: { influencerId: app.influencerId, text: `「${app.campaign.title}」に採用されました。投稿を提出しましょう。`, href: "/app/manage" },
+    });
+  }
   await recordAudit({
     actorId: admin.userId,
     action: "application.decide",
@@ -194,7 +199,8 @@ export async function confirmApplicationAction(formData: FormData): Promise<void
   await prisma.application.update({ where: { id }, data: { status: "COMPLETED" } });
 
   const c = app.campaign;
-  if ((c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0) {
+  const paid = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0;
+  if (paid) {
     const exists = await prisma.transaction.findFirst({ where: { influencerId: app.influencerId, campaignId: c.id } });
     if (!exists) {
       await prisma.transaction.create({ data: { influencerId: app.influencerId, campaignId: c.id, amountYen: c.rewardYen, status: "振込済み" } });
@@ -203,6 +209,13 @@ export async function confirmApplicationAction(formData: FormData): Promise<void
   } else {
     await recordAudit({ actorId: admin.userId, action: "application.complete", target: id });
   }
+  await prisma.notification.create({
+    data: {
+      influencerId: app.influencerId,
+      text: paid ? `案件が完了しました。報酬 ¥${c.rewardYen.toLocaleString("ja-JP")} を振り込みました。` : "案件が完了しました。お疲れさまでした！",
+      href: paid ? "/app/me/transactions" : "/app/manage",
+    },
+  });
   revalidatePath(`/admin/campaigns/${c.id}`);
 }
 

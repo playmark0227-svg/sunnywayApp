@@ -90,6 +90,14 @@ export async function toggleFavoriteAction(campaignId: string): Promise<void> {
   revalidatePath("/app");
 }
 
+// ===== 通知 =====
+export async function markAllNotificationsReadAction(): Promise<void> {
+  const me = await myProfile();
+  await prisma.notification.updateMany({ where: { influencerId: me.id, read: false }, data: { read: true } });
+  revalidatePath("/app");
+  revalidatePath("/app/notifications");
+}
+
 // ===== メッセージ =====
 const msgSchema = z.object({ text: z.string().min(1).max(1000) });
 export async function sendMessageAction(_prev: FormState, formData: FormData): Promise<FormState> {

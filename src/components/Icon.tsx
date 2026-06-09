@@ -106,3 +106,16 @@ export function ArtTile({
 export function Pill({ label, className }: { label: string; className: string }) {
   return <span className={`badge ${className}`}>{label}</span>;
 }
+
+/** 商品サムネ: 画像があれば画像、なければコスメのイラスト */
+export function Thumb({ imageUrl, art, className = "h-44", svgClass = "h-24 w-24" }: { imageUrl?: string; art: string; className?: string; svgClass?: string }) {
+  if (imageUrl) {
+    return (
+      <div className={`relative w-full overflow-hidden ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+      </div>
+    );
+  }
+  return <ArtTile art={art} className={className} svgClass={svgClass} />;
+}
