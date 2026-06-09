@@ -100,3 +100,120 @@ body {
     transform: scale(1);
   }
 }
+
+/* ---- ネイティブっぽい操作感 ---- */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 768px) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+/* 画面遷移（前面に乗る感じ） */
+.screen-in {
+  animation: screenIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes screenIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* タップ反応 */
+.tap {
+  transition: transform 0.12s ease;
+  touch-action: manipulation;
+}
+.tap:active {
+  transform: scale(0.975);
+}
+/* スケルトン */
+.skeleton {
+  background: linear-gradient(100deg, #efe7db 30%, #f6f0e7 50%, #efe7db 70%);
+  background-size: 200% 100%;
+  animation: sk 1.2s ease-in-out infinite;
+}
+@keyframes sk {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ============ リッチ演出ライブラリ ============ */
+/* 出現（スタッガーは inline animation-delay で） */
+.reveal { opacity: 0; animation: reveal 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes reveal { from { opacity:0; transform: translateY(18px) scale(0.97); } to { opacity:1; transform:none; } }
+
+/* ふわふわ浮遊 */
+.float { animation: float 4.5s ease-in-out infinite; }
+@keyframes float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
+
+/* 呼吸 */
+.breathe { animation: breathe 6s ease-in-out infinite; }
+@keyframes breathe { 0%,100%{ transform: scale(1); opacity:.85; } 50%{ transform: scale(1.12); opacity:1; } }
+
+/* ゆっくり回転 */
+.spin-slow { animation: spinSlow 22s linear infinite; }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+
+/* 動くグラデ背景 */
+.grad-move { background-size: 220% 220%; animation: gradMove 9s ease infinite; }
+@keyframes gradMove { 0%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } 100%{ background-position:0% 50%; } }
+
+/* グラデ文字を流す */
+.grad-text { background-size: 200% auto; animation: gradText 5s linear infinite; }
+@keyframes gradText { to { background-position: 200% center; } }
+
+/* 横切るシャイン */
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  transform: translateX(-150%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.5) 50%, transparent 100%);
+  width: 60%; animation: shine 4.2s ease-in-out infinite;
+}
+@keyframes shine { 0%{ transform: translateX(-180%) skewX(-18deg);} 55%,100%{ transform: translateX(360%) skewX(-18deg);} }
+
+/* ボタンの光沢（押下時にキラッ） */
+.sheen { position: relative; overflow: hidden; }
+.sheen::after {
+  content:""; position:absolute; top:0; left:0; height:100%; width:40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
+  transform: translateX(-200%) skewX(-18deg); transition: transform .6s ease;
+}
+.sheen:active::after, .sheen:hover::after { transform: translateX(360%) skewX(-18deg); }
+
+/* ♥ はじけ */
+.burst { animation: burst .5s cubic-bezier(.34,1.7,.5,1); }
+@keyframes burst { 0%{ transform: scale(1);} 30%{ transform: scale(1.45);} 55%{ transform: scale(.9);} 100%{ transform: scale(1);} }
+.ring { position:absolute; inset:0; border-radius:9999px; border:2px solid currentColor; opacity:0; }
+.ring.go { animation: ring .55s ease-out forwards; }
+@keyframes ring { 0%{ transform: scale(.5); opacity:.6;} 100%{ transform: scale(2.1); opacity:0;} }
+
+/* キラッ（粒） */
+.spark { position:absolute; opacity:0; }
+.spark.go { animation: spark .7s ease-out forwards; }
+@keyframes spark { 0%{ transform: scale(.2) translate(0,0); opacity:1;} 100%{ transform: scale(1) translate(var(--dx), var(--dy)); opacity:0;} }
+
+/* 成功のチェック */
+.success-pop { animation: successPop .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes successPop { 0%{ transform: scale(.85); opacity:0;} 100%{ transform: scale(1); opacity:1;} }
+
+/* スクロールでヘッダーに薄い影（任意） */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* primary ボタンの光沢 */
+.btn-primary { position: relative; overflow: hidden; }
+.btn-primary::after {
+  content: ""; position: absolute; top: 0; left: 0; height: 100%; width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+  transform: translateX(-220%) skewX(-18deg); transition: transform .55s ease; pointer-events: none;
+}
+.btn-primary:hover::after, .btn-primary:active::after { transform: translateX(340%) skewX(-18deg); }

@@ -29,10 +29,26 @@ function OkBox({ s, msg }: { s: FormState; msg: string }) {
   return <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{msg}</p>;
 }
 
+function Sparkles() {
+  const pts: [string, string, string][] = [["18%", "-16px", "-18px"], ["80%", "14px", "-16px"], ["50%", "0px", "-24px"], ["32%", "-10px", "-20px"], ["68%", "10px", "-18px"]];
+  return (
+    <>
+      {pts.map(([l, dx, dy], i) => (
+        <span key={i} className="spark go text-sunny-400" style={{ left: l, top: "55%", ["--dx" as string]: dx, ["--dy" as string]: dy } as React.CSSProperties}>✦</span>
+      ))}
+    </>
+  );
+}
+
 export function ApplyForm({ campaignId }: { campaignId: string }) {
   const [open, setOpen] = useState(false);
   const [state, action] = useActionState<FormState, FormData>(applyToCampaignAction, undefined);
-  if (state?.ok) return <p className="rounded-xl bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-700">応募しました。案件管理で確認できます ✦</p>;
+  if (state?.ok) return (
+    <div className="success-pop relative overflow-hidden rounded-xl bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-700">
+      応募しました ✦ 案件管理で確認できます
+      <Sparkles />
+    </div>
+  );
   if (!open) return <button onClick={() => setOpen(true)} className="btn-primary w-full">この案件に応募する</button>;
   return (
     <form action={action} className="space-y-2">
@@ -106,10 +122,12 @@ export function MessageForm() {
 
 export function FavoriteButton({ campaignId, fav }: { campaignId: string; fav: boolean }) {
   const action = toggleFavoriteAction.bind(null, campaignId);
+  const [go, setGo] = useState(false);
   return (
     <form action={action} className="absolute right-3 top-3">
-      <button className={`grid h-9 w-9 place-items-center rounded-full bg-white/85 backdrop-blur transition active:scale-90 ${fav ? "text-sunny-500" : "text-ink/40"}`}>
-        <Icon name="heart" className="h-5 w-5" fill={fav} />
+      <button onClick={() => { setGo(true); setTimeout(() => setGo(false), 600); }} className={`relative grid h-9 w-9 place-items-center rounded-full bg-white/85 backdrop-blur transition active:scale-90 ${fav ? "text-sunny-500" : "text-ink/40"}`}>
+        <span className={`ring text-sunny-500 ${go ? "go" : ""}`} />
+        <Icon name="heart" className={`h-5 w-5 ${go ? "burst" : ""}`} fill={fav} />
       </button>
     </form>
   );

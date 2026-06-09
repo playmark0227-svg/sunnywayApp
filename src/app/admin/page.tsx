@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, Stat, CampaignBadge } from "@/components/ui";
 import { ArtTile, ART_BY_CATEGORY } from "@/components/Icon";
-import { rewardTypeLabel, num, yen } from "@/lib/labels";
+import { CountUp } from "@/components/CountUp";
+import { rewardTypeLabel } from "@/lib/labels";
 
 export default async function AdminDashboard() {
   await requireAdmin();
@@ -22,12 +23,12 @@ export default async function AdminDashboard() {
     <div>
       <PageHeader title="ダッシュボード" description="プラットフォーム全体のサマリー" />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <Stat label="ブランド" value={brandCount} />
-        <Stat label="インフルエンサー" value={infCount} />
-        <Stat label="募集中の掲載" value={openCount} />
-        <Stat label="取り上げ件数" value={posted} />
-        <Stat label="合計リーチ" value={num(reachAgg._sum.postReach ?? 0)} />
-        <Stat label="報酬支払額" value={yen(paidAgg._sum.amountYen ?? 0)} sub="振込済みの総額" />
+        <Stat label="ブランド" value={<CountUp value={brandCount} />} />
+        <Stat label="インフルエンサー" value={<CountUp value={infCount} />} />
+        <Stat label="募集中の掲載" value={<CountUp value={openCount} />} />
+        <Stat label="取り上げ件数" value={<CountUp value={posted} />} />
+        <Stat label="合計リーチ" value={<CountUp value={reachAgg._sum.postReach ?? 0} />} />
+        <Stat label="報酬支払額" value={<CountUp value={paidAgg._sum.amountYen ?? 0} prefix="¥" />} sub="振込済みの総額" />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">

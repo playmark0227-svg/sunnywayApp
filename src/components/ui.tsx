@@ -12,7 +12,7 @@ export function PageHeader({ title, description, action }: { title: string; desc
   );
 }
 
-export function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
+export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
   return (
     <div className="card p-6">
       <div className="text-xs font-medium uppercase tracking-wider text-muted">{label}</div>

@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db";
 import { requireInfluencer } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions/auth";
 import { Icon } from "@/components/Icon";
-import { num, yen, isPosted } from "@/lib/labels";
+import { CountUp } from "@/components/CountUp";
+import { num, isPosted } from "@/lib/labels";
 
 const ITEMS: [string, string, string][] = [
   ["profile", "edit", "プロフィール"],
@@ -38,8 +39,8 @@ export default async function MePage() {
       </div>
 
       <div className="grid grid-cols-3 gap-3 px-5">
-        {[["応募", String(profile.applications.length)], ["取り上げ", String(posted)], ["報酬", yen(reward)]].map(([l, v]) => (
-          <div key={l} className="rounded-2xl border border-line bg-surface p-3 text-center"><div className="display text-xl font-semibold text-ink">{v}</div><div className="mt-0.5 text-[11px] text-muted">{l}</div></div>
+        {[{ l: "応募", n: profile.applications.length, yen: false }, { l: "取り上げ", n: posted, yen: false }, { l: "報酬", n: reward, yen: true }].map((s) => (
+          <div key={s.l} className="rounded-2xl border border-line bg-surface p-3 text-center"><div className="display text-xl font-semibold text-ink"><CountUp value={s.n} prefix={s.yen ? "¥" : ""} /></div><div className="mt-0.5 text-[11px] text-muted">{s.l}</div></div>
         ))}
       </div>
 

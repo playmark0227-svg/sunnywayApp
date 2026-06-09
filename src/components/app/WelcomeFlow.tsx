@@ -50,12 +50,15 @@ export function WelcomeFlow() {
     );
     if (s.brand) {
       return (
-        <main className="fade flex min-h-[100dvh] flex-col items-center justify-center bg-sunrise px-8 text-center text-white">
-          <div className="pop"><SunMark className="h-24 w-24 shadow-lift" /></div>
-          <h1 className="display mt-7 text-4xl font-semibold tracking-wide">Sunnyway</h1>
-          <p className="mt-3 text-white/85">{s.sub}</p>
+        <main className="fade grad-move flex min-h-[100dvh] flex-col items-center justify-center bg-sunrise px-8 text-center text-white">
+          <div className="relative">
+            <div className="spin-slow absolute -inset-8 rounded-full" style={{ background: "conic-gradient(from 0deg, rgba(255,255,255,0), rgba(255,255,255,.4), rgba(255,255,255,0) 60%)" }} />
+            <div className="breathe pop relative"><SunMark className="h-24 w-24 shadow-lift" /></div>
+          </div>
+          <h1 className="reveal display mt-8 text-4xl font-semibold tracking-wide">Sunnyway</h1>
+          <p className="reveal mt-3 text-white/85" style={{ animationDelay: "120ms" }}>{s.sub}</p>
           <div className="mt-12">{dots}</div>
-          <button onClick={next} className="mt-8 w-full max-w-xs rounded-full bg-white py-3.5 text-base font-semibold text-sunny-600 active:scale-[.98]">はじめる</button>
+          <button onClick={next} className="sheen reveal mt-8 w-full max-w-xs rounded-full bg-white py-3.5 text-base font-semibold text-sunny-600 active:scale-[.98]" style={{ animationDelay: "220ms" }}>はじめる</button>
         </main>
       );
     }

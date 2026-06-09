@@ -41,11 +41,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </header>
 
       <div className="px-5 pt-1">
-        <div className="relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift">
-          <div className="absolute -right-6 -top-8 opacity-30"><Icon name="spark" className="h-28 w-28" fill /></div>
+        <div className="shine grad-move relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift">
+          <div className="breathe absolute -right-6 -top-8 opacity-30"><Icon name="spark" className="h-28 w-28" fill /></div>
+          <div className="float absolute bottom-4 right-6 opacity-50"><Icon name="spark" className="h-6 w-6" fill /></div>
           <p className="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p>
           <p className="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br />最大 ¥50,000</p>
-          <div className="mt-4 flex gap-1.5">{[0, 1, 2].map((i) => <span key={i} className={`h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}`} />)}</div>
+          <div className="mt-4 flex gap-1.5">{[0, 1, 2].map((i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}`} />)}</div>
         </div>
       </div>
 
@@ -62,14 +63,14 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           <section key={mediaName} className="mt-7">
             <div className="mb-3 flex items-baseline justify-between px-5"><h2 className="display text-base font-semibold text-ink">{mediaName}</h2><span className="text-xs text-muted">{list.filter((c) => c.media === mediaName).length}件</span></div>
             <div className="flex snap-x gap-4 overflow-x-auto px-5 pb-2">
-              {list.filter((c) => c.media === mediaName).map((c) => {
+              {list.filter((c) => c.media === mediaName).map((c, i) => {
                 const art = ART_BY_CATEGORY(c.product.category);
                 const applied = c.appliedBase + c._count.applications;
                 const already = appliedIds.has(c.id);
                 const tags = parseTags(c.tags);
                 const reward = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? "¥" + num(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
                 return (
-                  <article key={c.id} className="w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft">
+                  <article key={c.id} style={{ animationDelay: `${i * 80}ms` }} className="reveal tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft">
                     <div className="relative">
                       <Link href={`/app/campaign/${c.id}`} className="block"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-44" /></Link>
                       {tags[0] && <span className="badge absolute left-3 top-3 bg-white/90 text-ink/80 backdrop-blur">{tags[0]}</span>}
