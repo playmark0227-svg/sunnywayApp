@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>Sunnyway プラットフォーム仕様書 v1.0</title>
+<style>
+  :root {
+    --ink: #1A1A2E; --muted: #5A5A6E; --line: #EFE6DA; --canvas: #FFFAF3;
+    --sunny: #F26B1F; --sunny-dark: #B5430F; --sunny-soft: #FFF4E8; --coral: #FF6B7D;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "IPAPGothic", "IPAGothic", "Noto Sans JP", sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.75; }
+
+  /* ===== 表紙 ===== */
+  .cover { height: 257mm; display: flex; flex-direction: column; page-break-after: always; }
+  .cover-hero { background: linear-gradient(135deg, #F26B1F 0%, #F8704A 50%, #FF6B7D 100%); border-radius: 18px; color: #fff; padding: 22mm 18mm; display: flex; flex-direction: column; justify-content: center; flex: 1; position: relative; overflow: hidden; }
+  .cover-hero .spark { position: absolute; right: -12mm; top: -14mm; width: 70mm; height: 70mm; border-radius: 50%; background: rgba(255,255,255,.14); }
+  .cover-hero .spark2 { position: absolute; right: 18mm; bottom: 12mm; width: 22mm; height: 22mm; border-radius: 50%; background: rgba(255,255,255,.18); }
+  .cover-mascot { width: 30mm; height: 30mm; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(0,0,0,.18); margin-bottom: 10mm; }
+  .cover-mascot img { width: 78%; height: 78%; object-fit: contain; }
+  .cover-kicker { font-size: 10pt; letter-spacing: .35em; text-transform: uppercase; opacity: .85; font-weight: bold; }
+  .cover-title { font-size: 26pt; font-weight: bold; line-height: 1.4; margin-top: 4mm; letter-spacing: .02em; }
+  .cover-sub { font-size: 12pt; margin-top: 4mm; opacity: .92; }
+  .cover-meta { margin-top: 12mm; border-collapse: collapse; width: auto; }
+  .cover-meta td { border: none; padding: 1.2mm 6mm 1.2mm 0; font-size: 10pt; color: rgba(255,255,255,.95); }
+  .cover-meta td:first-child { opacity: .75; }
+  .cover-foot { text-align: center; color: var(--muted); font-size: 9pt; padding-top: 8mm; letter-spacing: .12em; }
+
+  /* ===== 本文 ===== */
+  h2 { font-size: 14pt; color: var(--ink); margin: 9mm 0 3.5mm; padding: 2mm 0 2mm 4mm; border-left: 4px solid var(--sunny); background: var(--sunny-soft); border-radius: 0 6px 6px 0; page-break-after: avoid; }
+  h2 .no { color: var(--sunny); margin-right: 2.5mm; }
+  h3 { font-size: 11.5pt; margin: 5.5mm 0 2mm; color: var(--sunny-dark); page-break-after: avoid; }
+  p { margin: 1.5mm 0; }
+  ul { margin: 1.5mm 0 1.5mm 6mm; }
+  li { margin: .8mm 0; }
+  table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; page-break-inside: avoid; font-size: 9.5pt; }
+  th { background: var(--canvas); color: var(--ink); text-align: left; font-weight: bold; }
+  th, td { border: 1px solid var(--line); padding: 1.8mm 3mm; vertical-align: top; }
+  td.c, th.c { text-align: center; }
+  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.8pt; background: var(--canvas); border: 1px solid var(--line); border-radius: 3px; padding: 0 1.2mm; }
+  .note { background: var(--sunny-soft); border: 1px solid #FCCB98; border-radius: 8px; padding: 3mm 4mm; margin: 2.5mm 0; font-size: 9.5pt; page-break-inside: avoid; }
+  .note b { color: var(--sunny-dark); }
+  .flow { background: var(--canvas); border: 1px solid var(--line); border-radius: 8px; padding: 4mm 5mm; margin: 2.5mm 0; font-size: 9.5pt; line-height: 2.0; page-break-inside: avoid; }
+  .flow .who { display: inline-block; min-width: 34mm; font-weight: bold; color: var(--sunny-dark); }
+  .flow .arr { color: var(--sunny); font-weight: bold; }
+  .pill { display: inline-block; border-radius: 999px; padding: 0 2.6mm; font-size: 8.5pt; font-weight: bold; border: 1px solid var(--line); background: #fff; }
+  .toc { columns: 2; column-gap: 10mm; margin: 3mm 0; font-size: 10pt; }
+  .toc div { break-inside: avoid; padding: 1mm 0; border-bottom: 1px dashed var(--line); }
+  .toc .no { color: var(--sunny); font-weight: bold; margin-right: 2mm; }
+  .pb { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- ============ 表紙 ============ -->
+<div class="cover">
+  <div class="cover-hero">
+    <div class="spark"></div><div class="spark2"></div>
+    <div class="cover-mascot"><img src="data:image/png;base64,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" alt="Sunnyway" /></div>
+    <div class="cover-kicker">System Specification</div>
+    <div class="cover-title">Sunnyway<br/>インフルエンサー マッチング<br/>プラットフォーム 仕様書</div>
+    <div class="cover-sub">コスメと、出会う。— ブランドとインフルエンサーをつなぐ</div>
+    <table class="cover-meta">
+      <tr><td>文書バージョン</td><td>v1.0</td></tr>
+      <tr><td>作成日</td><td>2026年6月11日</td></tr>
+      <tr><td>対象</td><td>インフルエンサー向けアプリ／運営管理コンソール</td></tr>
+    </table>
+  </div>
+  <div class="cover-foot">SUNNYWAY PLATFORM — SPECIFICATION v1.0</div>
+</div>
+
+<!-- ============ 目次 ============ -->
+<h2><span class="no">目次</span></h2>
+<div class="toc">
+  <div><span class="no">1</span>サービス概要</div>
+  <div><span class="no">2</span>システム構成</div>
+  <div><span class="no">3</span>ビジネスモデル（課金設計）</div>
+  <div><span class="no">4</span>業務フロー（案件ライフサイクル）</div>
+  <div><span class="no">5</span>画面仕様 — インフルエンサーアプリ</div>
+  <div><span class="no">6</span>画面仕様 — 運営管理コンソール</div>
+  <div><span class="no">7</span>データ構造</div>
+  <div><span class="no">8</span>セキュリティ</div>
+  <div><span class="no">9</span>対応環境・UI／パフォーマンス</div>
+  <div><span class="no">10</span>デモアカウント</div>
+  <div><span class="no">11</span>納品物</div>
+  <div><span class="no">12</span>今後の拡張候補</div>
+</div>
+
+<!-- ============ 1 ============ -->
+<h2><span class="no">1</span>サービス概要</h2>
+<h3>1.1 目的</h3>
+<p>コスメブランドの商品と美容系インフルエンサーをマッチングするプラットフォーム。運営（Sunnyway）がブランドから商品掲載を預かり、<b>「ここに掲載すれば◯人のインフルエンサーが取り上げます」</b>という価値を中心に販売する。</p>
+
+<h3>1.2 提供価値</h3>
+<ul>
+  <li><b>ブランド</b>: 掲載するだけで目標人数のインフルエンサーによるSNS投稿（取り上げ）を獲得。投稿URL・リーチ実績はすべて運営の確認済み。</li>
+  <li><b>インフルエンサー</b>: アプリから気になるコスメ案件に応募し、商品提供（ギフティング）や金銭報酬を受け取れる。</li>
+  <li><b>運営</b>: ブランド向け課金（4モデル併用可）とマッチング仲介で収益化。案件・報酬・実績を一元管理。</li>
+</ul>
+
+<h3>1.3 利用者と権限（3者構成）</h3>
+<table>
+  <tr><th style="width:26%">利用者</th><th style="width:34%">利用画面</th><th>権限</th></tr>
+  <tr><td><b>運営（Sunnyway）</b></td><td>Web 管理コンソール（<code>/admin</code>）</td><td>全権限。ブランド・商品・掲載・応募・報酬・インフルエンサーの管理</td></tr>
+  <tr><td><b>インフルエンサー</b></td><td>スマホアプリ（PWA、<code>/app</code>）</td><td>案件の閲覧・応募・投稿提出・報酬確認・自身のプロフィール管理のみ</td></tr>
+  <tr><td><b>コスメブランド</b></td><td>（ログインアカウントなし）</td><td><b>管理画面へのアクセス権を持たない。</b>運営が窓口となり代理管理</td></tr>
+</table>
+<div class="note"><b>設計ポイント:</b> ブランドは「ログインするユーザー」ではなく、運営が管理する<b>データ</b>としてのみ存在します。「ブランドに管理権限を渡さない」という要件を権限設定ではなくデータ構造で担保しているため、設定ミスによる権限漏えいが構造上発生しません。</div>
+
+<!-- ============ 2 ============ -->
+<h2><span class="no">2</span>システム構成</h2>
+<h3>2.1 アプリケーション構成</h3>
+<table>
+  <tr><th style="width:30%">区分</th><th style="width:36%">URL</th><th>内容</th></tr>
+  <tr><td>インフルエンサーアプリ</td><td><code>/</code>（初回オンボーディング）→ <code>/app</code></td><td>スマホ向け PWA。タブレットにも対応</td></tr>
+  <tr><td>運営管理コンソール</td><td><code>/admin</code></td><td>PC・タブレット向け Web 管理画面（別URL・別権限）</td></tr>
+  <tr><td>ログイン</td><td><code>/login</code></td><td>共通の認証入口（権限により遷移先が分岐）</td></tr>
+</table>
+
+<h3>2.2 技術スタック</h3>
+<table>
+  <tr><th style="width:30%">層</th><th>採用技術</th></tr>
+  <tr><td>フロントエンド／サーバー</td><td>Next.js 15（App Router・Server Actions）+ React 19 + TypeScript</td></tr>
+  <tr><td>スタイリング</td><td>Tailwind CSS（ブランドデザイントークンによる一元管理）</td></tr>
+  <tr><td>データベース</td><td>Prisma ORM ／ 開発: SQLite → 本番: PostgreSQL（接続先の差し替えのみで移行可能）</td></tr>
+  <tr><td>認証</td><td>JWT（httpOnly Cookie）+ bcrypt パスワードハッシュ</td></tr>
+  <tr><td>配信</td><td>PWA（ホーム画面追加・オフラインシェル・Service Worker）</td></tr>
+  <tr><td>インフラ</td><td>Docker（standalone ビルド）対応／GitHub Actions CI（ビルド検証）</td></tr>
+</table>
+
+<h3>2.3 デモ環境</h3>
+<table>
+  <tr><th style="width:26%">環境</th><th style="width:46%">URL</th><th>説明</th></tr>
+  <tr><td>アプリ 操作デモ</td><td>https://playmark0227-svg.github.io/sunnywayApp/</td><td>ブラウザだけで体験できる静的デモ。<b>入力は保存されません</b></td></tr>
+  <tr><td>管理画面 操作デモ</td><td>https://playmark0227-svg.github.io/sunnywayApp/admin.html</td><td>同上（運営コンソールのデモ）</td></tr>
+</table>
+<div class="note">上記はプレゼン・確認用のモックです。本体（Next.js アプリ）は実データベース・実認証で動作し、<code>DEPLOY.md</code> の手順でサーバーへ配置します。</div>
+
+<!-- ============ 3 ============ -->
+<h2><span class="no">3</span>ビジネスモデル（実装済みの課金設計）</h2>
+<p>運営→ブランドへの課金は次の <b>4 モデル</b>をシステムに実装済み。掲載（キャンペーン）ごとに<b>複数併用</b>できます。</p>
+<table>
+  <tr><th style="width:30%">モデル</th><th style="width:42%">内容</th><th>設定箇所</th></tr>
+  <tr><td><code>MONTHLY</code> 月額掲載料</td><td>ブランド単位の月額契約</td><td>ブランドに月額（円）を設定</td></tr>
+  <tr><td><code>PER_CAMPAIGN</code> 掲載課金</td><td>掲載1件ごとの費用</td><td>掲載に費用（円）を設定</td></tr>
+  <tr><td><code>PERFORMANCE</code> 成果連動</td><td>リーチ・投稿数に連動した課金</td><td>投稿ごとのリーチ実績を運営が確認・集計</td></tr>
+  <tr><td><code>SALES_COMMISSION</code> 販売手数料</td><td>売上に対する料率課金</td><td>掲載に料率（%）を設定</td></tr>
+</table>
+<p>インフルエンサーへの<b>報酬タイプ</b>は案件ごとに設定します。</p>
+<table>
+  <tr><th style="width:30%">タイプ</th><th>内容</th></tr>
+  <tr><td><code>GIFTING</code></td><td>現物提供（商品ギフティング）</td></tr>
+  <tr><td><code>PAID</code></td><td>金銭報酬（1人あたりの金額を設定）</td></tr>
+  <tr><td><code>BOTH</code></td><td>現物 + 金銭の併用</td></tr>
+  <tr><td><code>OTHER</code></td><td>その他（発売イベント招待など）</td></tr>
+</table>
+
+<!-- ============ 4 ============ -->
+<h2><span class="no">4</span>業務フロー（案件のライフサイクル）</h2>
+<div class="flow">
+  <span class="who">【運営】</span>ブランド登録 <span class="arr">→</span> 商品登録 <span class="arr">→</span> 掲載作成（下書き）<span class="arr">→</span> 公開<br/>
+  <span class="who">【インフルエンサー】</span>さがす <span class="arr">→</span> 応募<br/>
+  <span class="who">【運営】</span>応募者を確認 <span class="arr">→</span> 採用 or 見送り（アプリへ自動通知）<br/>
+  <span class="who">【インフルエンサー】</span>商品受け取り <span class="arr">→</span> SNS投稿 <span class="arr">→</span> 投稿URL・リーチを提出<br/>
+  <span class="who">【運営】</span>投稿チェック <span class="arr">→</span> 完了（報酬を記録・自動通知） or 差し戻し
+</div>
+
+<h3>4.1 掲載（キャンペーン）の状態</h3>
+<table>
+  <tr><th style="width:30%">状態</th><th>意味</th></tr>
+  <tr><td><code>DRAFT</code> 下書き</td><td>インフルエンサーには非公開</td></tr>
+  <tr><td><code>OPEN</code> 募集中</td><td>アプリの「さがす」に表示</td></tr>
+  <tr><td><code>CLOSED</code> 募集締切</td><td>新規応募の受付を終了</td></tr>
+  <tr><td><code>COMPLETED</code> 完了</td><td>掲載をクローズ</td></tr>
+</table>
+
+<h3>4.2 応募の状態</h3>
+<table>
+  <tr><th style="width:26%">状態</th><th style="width:44%">意味</th><th>アプリでの表示</th></tr>
+  <tr><td><code>APPLIED</code></td><td>応募済み（運営の判断待ち）</td><td>応募履歴</td></tr>
+  <tr><td><code>APPROVED</code></td><td>採用（投稿待ち）</td><td>案件管理「やること」</td></tr>
+  <tr><td><code>SUBMITTED</code></td><td>投稿提出済み（運営チェック中）</td><td>案件管理「チェック中」</td></tr>
+  <tr><td><code>COMPLETED</code></td><td>完了（報酬確定）</td><td>案件管理「完了」</td></tr>
+  <tr><td><code>REJECTED</code></td><td>見送り</td><td>応募履歴</td></tr>
+</table>
+<ul>
+  <li>同一案件への<b>二重応募はデータベース制約で禁止</b>。</li>
+  <li>採用時・完了時にはアプリ内通知を<b>自動送信</b>。</li>
+  <li>完了時には報酬の<b>取引記録（Transaction）を自動作成</b>し、インフルエンサーの取引履歴へ反映。</li>
+</ul>
+
+<!-- ============ 5 ============ -->
+<h2 class="pb"><span class="no">5</span>画面仕様 — インフルエンサーアプリ（スマホ／タブレット PWA）</h2>
+<h3>5.1 初回体験</h3>
+<table>
+  <tr><th style="width:30%">画面</th><th>内容</th></tr>
+  <tr><td>スプラッシュ</td><td>ブランドロゴ（マスコット）アニメーション</td></tr>
+  <tr><td>オンボーディング</td><td>サービス紹介 3 スライド（スキップ可）</td></tr>
+  <tr><td>新規登録／ログイン</td><td>メール＋パスワード。登録時に SNS ハンドル・フォロワー数等を入力</td></tr>
+</table>
+
+<h3>5.2 さがす（ホーム）</h3>
+<ul>
+  <li>特集バナー（月間アワード等のお知らせ枠）</li>
+  <li>カテゴリフィルタ: すべて／スキンケア／メイクアップ／顔出し不要／報酬あり</li>
+  <li>媒体別セクション: Instagram Feed ／ Instagram Reels ／ TikTok</li>
+  <li>案件カード: 商品写真・ブランド名・タイトル・報酬・応募状況（応募数／募集人数）・締切・条件タグ・お気に入り（♥）・応募ボタン</li>
+  <li>通知ベル（未読件数バッジ付き）</li>
+</ul>
+
+<h3>5.3 案件詳細</h3>
+<ul>
+  <li>商品写真・ブランド・依頼内容（投稿条件）・条件タグ・報酬・応募状況・締切</li>
+  <li>応募フォーム（応募時の一言メッセージ付き）／応募済み表示</li>
+</ul>
+
+<h3>5.4 案件管理</h3>
+<ul>
+  <li>3 タブ: <b>やること</b>（投稿URL・リーチの提出フォーム）／<b>チェック中</b>／<b>完了</b>（確定報酬の表示）</li>
+  <li>応募履歴ページ（全応募の状態一覧）</li>
+</ul>
+
+<h3>5.5 メッセージ／5.6 通知</h3>
+<ul>
+  <li>運営（Sunnyway 公式）とのチャット形式のやり取り（吹き出しUI・送信フォーム）</li>
+  <li>採用・完了などの通知一覧、未読管理・一括既読</li>
+</ul>
+
+<h3>5.7 マイページ</h3>
+<ul>
+  <li>実績サマリー: 応募数・取り上げ数・累計報酬</li>
+  <li>プロフィール（名前・自己紹介・フォロワー数）／住所（ギフティング発送先）／SNS連携（Instagram・TikTok）／振込先／取引履歴／通知設定／使い方の再表示／ログアウト</li>
+</ul>
+
+<!-- ============ 6 ============ -->
+<h2><span class="no">6</span>画面仕様 — 運営管理コンソール（<code>/admin</code>）</h2>
+<h3>6.1 ダッシュボード</h3>
+<ul>
+  <li>KPI: 募集中の掲載・取り上げ件数・合計リーチ・報酬支払額・ブランド数</li>
+  <li><b>要対応キュー</b>: 提出済み（チェック待ち）の投稿一覧</li>
+  <li>最近の掲載・操作ログ（監査）</li>
+</ul>
+<h3>6.2 掲載管理</h3>
+<ul>
+  <li>新規作成: ブランド・商品・タイトル・依頼内容・媒体・条件タグ・締切・募集人数（=「◯人が取り上げます」）・報酬タイプ／金額・課金モデル（複数選択）</li>
+  <li>状態変更（下書き→公開→締切→完了）</li>
+  <li>掲載詳細: 応募者一覧 → <b>採用／見送り</b> → 提出された投稿URL・リーチの<b>チェック → 完了（報酬記録）／差し戻し</b></li>
+</ul>
+<h3>6.3 商品管理／6.4 ブランド管理／6.5 インフルエンサー管理</h3>
+<ul>
+  <li>商品: 登録・一覧（カテゴリ・参考価格・<b>商品画像のアップロード対応</b>）</li>
+  <li>ブランド: 登録・一覧（担当者・連絡先・月額契約の金額設定）</li>
+  <li>インフルエンサー: 一覧（媒体・フォロワー数・実績・認証バッジ）</li>
+</ul>
+
+<!-- ============ 7 ============ -->
+<h2><span class="no">7</span>データ構造（主要エンティティ）</h2>
+<table>
+  <tr><th style="width:28%">エンティティ</th><th>役割</th></tr>
+  <tr><td>User</td><td>ログインアカウント（役割: ADMIN／INFLUENCER）</td></tr>
+  <tr><td>InfluencerProfile</td><td>インフルエンサー情報（ハンドル・媒体・フォロワー・住所・振込先・SNS連携・お気に入り）</td></tr>
+  <tr><td>Brand</td><td>ブランド（運営が代理管理。月額契約金額を保持）</td></tr>
+  <tr><td>Product</td><td>商品（カテゴリ・画像・参考価格）</td></tr>
+  <tr><td>Campaign</td><td>掲載（媒体・タグ・募集人数・報酬設計・課金モデル・状態）</td></tr>
+  <tr><td>Application</td><td>応募（状態・応募メッセージ・投稿URL・リーチ実績）</td></tr>
+  <tr><td>Transaction</td><td>報酬の取引記録（金額・状態）</td></tr>
+  <tr><td>Message</td><td>運営⇄インフルエンサーのメッセージ</td></tr>
+  <tr><td>Notification</td><td>アプリ内通知（未読管理）</td></tr>
+  <tr><td>AuditLog</td><td>運営の全管理操作の監査ログ</td></tr>
+</table>
+
+<!-- ============ 8 ============ -->
+<h2><span class="no">8</span>セキュリティ</h2>
+<table>
+  <tr><th style="width:26%">項目</th><th>実装内容</th></tr>
+  <tr><td>認証</td><td>JWT を httpOnly Cookie に保存（JS から読み取り不可）。パスワードは bcrypt でハッシュ化</td></tr>
+  <tr><td>アクセス制御</td><td>ロールベース（RBAC）。ミドルウェア＋各ページ＋各操作（Server Action）の<b>三層でチェック</b></td></tr>
+  <tr><td>ブランドの隔離</td><td>ブランドにはログインアカウント自体が存在せず、管理画面へ到達する経路がない</td></tr>
+  <tr><td>監査ログ</td><td>ブランド作成・採用・完了など、運営の管理操作をすべて記録</td></tr>
+  <tr><td>二重応募防止</td><td>データベースの一意制約で同一案件への重複応募を禁止</td></tr>
+  <tr><td>デモ資格情報</td><td>本番公開前に必ず変更（§10 参照）</td></tr>
+</table>
+
+<!-- ============ 9 ============ -->
+<h2><span class="no">9</span>対応環境・UI／パフォーマンス</h2>
+<h3>9.1 レスポンシブ対応</h3>
+<table>
+  <tr><th style="width:30%">幅</th><th>レイアウト</th></tr>
+  <tr><td>スマートフォン</td><td>下部タブバー（画面に固定追従）＋縦1カラム</td></tr>
+  <tr><td>タブレット（768px〜）</td><td>左サイドレール＋本文、案件・管理カードは 2 カラムグリッド</td></tr>
+  <tr><td>ワイド（1024px〜）</td><td>サイドレール拡張（ロゴ＋ラベル表示）、案件は 3 カラムグリッド</td></tr>
+</table>
+<h3>9.2 PWA ／ 9.3 デザイン ／ 9.4 パフォーマンス</h3>
+<ul>
+  <li>ホーム画面に追加可能（専用アイコン・スプラッシュ）。Service Worker によるオフラインシェル・主要画像のプリキャッシュ</li>
+  <li>株式会社Sunnyway 公式サイトのブランドに準拠（カラー・タイポグラフィ・マスコットロゴ）</li>
+  <li>マイクロアニメーション（画面遷移・カード出現・タップフィードバック・数値カウントアップ等）。<code>prefers-reduced-motion</code> に対応</li>
+  <li>画像の軽量化（合計 約261KB → 約76KB、<b>約71%削減</b>・画質劣化なし）。画面外画像の遅延読み込み・主要画像の先読み</li>
+</ul>
+
+<!-- ============ 10 ============ -->
+<h2><span class="no">10</span>デモアカウント</h2>
+<table>
+  <tr><th style="width:22%">役割</th><th style="width:32%">メールアドレス</th><th style="width:22%">パスワード</th><th>ログイン後</th></tr>
+  <tr><td>運営</td><td><code>admin@sunnyway.io</code></td><td><code>demo1234</code></td><td><code>/admin</code>（管理コンソール）</td></tr>
+  <tr><td>インフルエンサー</td><td><code>aoi@influencer.test</code></td><td><code>password123</code></td><td><code>/app</code>（アプリ）</td></tr>
+</table>
+<div class="note"><b>⚠️ 注意:</b> 上記は開発・確認用のシードデータです。<b>本番公開前に必ず変更してください。</b>静的デモ（github.io）はモックのため、任意の入力でログイン体験ができます（データは保存されません）。</div>
+
+<!-- ============ 11 ============ -->
+<h2><span class="no">11</span>納品物</h2>
+<table>
+  <tr><th style="width:48%">内容</th><th>補足</th></tr>
+  <tr><td>ソースコード一式（GitHub リポジトリ）</td><td>アプリ・管理画面・静的デモを含む</td></tr>
+  <tr><td>データベース定義（Prisma スキーマ）＋シードデータ</td><td>デモデータ投入スクリプト付き</td></tr>
+  <tr><td>Docker ビルド設定</td><td><code>Dockerfile</code>／standalone ビルド</td></tr>
+  <tr><td>デプロイ手順書</td><td><code>DEPLOY.md</code></td></tr>
+  <tr><td>CI（GitHub Actions）</td><td>ビルド検証／静的デモの自動公開</td></tr>
+</table>
+
+<!-- ============ 12 ============ -->
+<h2><span class="no">12</span>今後の拡張候補（オプション）</h2>
+<ul>
+  <li>本番ホスティング＋PostgreSQL への切り替え・独自ドメイン</li>
+  <li>Web Push 通知（端末へのプッシュ配信）</li>
+  <li>Instagram／TikTok API との実連携（フォロワー数・投稿実績の自動取得）</li>
+  <li>ブランド向け実績レポートの自動生成（PDF／メール）</li>
+  <li>決済・請求書発行の自動化</li>
+</ul>
+
+</body>
+</html>
