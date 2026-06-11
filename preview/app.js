@@ -43,7 +43,7 @@ function renderOnboarding() {
     </main>`;
     return;
   }
-  root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col bg-canvas px-7" style="padding-top:max(1rem,env(safe-area-inset-top))">
+  root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col px-7" style="padding-top:max(1rem,env(safe-area-inset-top))">
     <div class="flex justify-end py-2"><button class="rounded-full px-3 py-2 text-sm font-medium text-muted" data-act="ob-skip">スキップ</button></div>
     <div class="flex flex-1 flex-col items-center justify-center text-center">
       <div class="relative h-64 w-64 overflow-hidden rounded-[2.5rem] shadow-card">
@@ -66,7 +66,7 @@ function dots() {
 // ログイン / 新規登録
 // ============================================================
 function renderAuth() {
-  root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col bg-canvas px-7">
+  root.innerHTML = `<main class="fade flex min-h-[100dvh] flex-col px-7">
     <div class="flex flex-1 flex-col justify-center">
       <div class="mb-9 text-center">${sunMark("mx-auto h-16 w-16")}<h1 class="display mt-5 text-3xl font-semibold text-ink">はじめよう</h1><p class="mt-2 text-sm text-muted">数秒で登録。好きな案件にすぐ応募できます。</p></div>
       <div class="space-y-3">
@@ -92,9 +92,9 @@ function appShell(active, header, body) {
     <div class="flex min-h-0 flex-1 flex-col">${header}<main class="flex-1 overflow-y-auto"><div class="mx-auto min-h-full max-w-md md:max-w-3xl lg:max-w-5xl">${body}</div></main></div>
     ${nav}</div>`;
 }
-const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 py-2.5 md:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:py-3 ${on ? "text-sunny-600 lg:bg-sunny-50" : "text-muted lg:hover:bg-canvas"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise lg:hidden"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunny-50 lg:bg-transparent" : "scale-95 lg:scale-100"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide lg:text-sm">${label}</span></button>`;
-const appHeader = (title, right) => `<header class="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))"><h1 class="display text-xl font-semibold text-ink">${title}</h1><div class="flex items-center gap-1">${right || ""}</div></header>`;
-const subHeader = (title, back) => `<header class="sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))">${iconBtn("back", "nav", `data-href="${back}"`)}<h1 class="display text-lg font-semibold text-ink">${title}</h1></header>`;
+const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 py-2.5 md:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:py-3 ${on ? "text-sunny-600 lg:bg-sunny-50" : "text-muted lg:hover:bg-canvas"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise lg:hidden"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunrise text-white shadow-lift lg:bg-transparent lg:text-sunny-600 lg:shadow-none" : "scale-95 lg:scale-100"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide lg:text-sm">${label}</span></button>`;
+const appHeader = (title, right) => `<header class="hairline-b sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))"><h1 class="display text-xl font-semibold text-ink">${title}</h1><div class="flex items-center gap-1">${right || ""}</div></header>`;
+const subHeader = (title, back) => `<header class="hairline-b sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style="padding-top:max(0.9rem,env(safe-area-inset-top))">${iconBtn("back", "nav", `data-href="${back}"`)}<h1 class="display text-lg font-semibold text-ink">${title}</h1></header>`;
 const iconBtn = (icon, act, attrs = "") => `<button class="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5" data-act="${act}" ${attrs}>${ic(icon, "h-5 w-5")}</button>`;
 
 function renderApp(h) {
@@ -113,8 +113,8 @@ function viewSearch() {
   const match = (c) => searchFilter === "すべて" ? true : searchFilter === "顔出し不要" ? c.tags.includes("顔出し不要") : searchFilter === "報酬あり" ? (c.rewardType === "PAID" || c.rewardType === "BOTH") : product(c.productId).category === searchFilter;
   const list = open.filter(match);
   const medias = [...new Set(list.map((c) => c.media))];
-  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display text-base font-semibold text-ink">${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="stagger flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
-  return `<div class="px-5 pt-1"><div class="grad-move shine relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift"><div class="breathe absolute -right-6 -top-8 opacity-30">${ic("spark", "h-28 w-28", true)}</div><div class="float absolute bottom-4 right-6 opacity-50">${ic("spark", "h-6 w-6", true)}</div><p class="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p><p class="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br>最大 ¥50,000</p><div class="mt-4 flex gap-1.5">${[0, 1, 2].map((i) => `<span class="h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}"></span>`).join("")}</div></div></div>
+  const groups = medias.map((m) => `<section class="mt-7"><div class="mb-3 flex items-baseline justify-between px-5"><h2 class="display flex items-center gap-2 text-base font-semibold text-ink"><span class="tick"></span>${m}</h2><span class="text-xs text-muted">${list.filter((c) => c.media === m).length}件</span></div><div class="stagger flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">${list.filter((c) => c.media === m).map(searchCard).join("")}</div></section>`).join("");
+  return `<div class="px-5 pt-1"><div class="grad-move shine relative overflow-hidden rounded-3xl bg-sunrise p-6 text-white shadow-lift"><div class="breathe absolute -right-6 -top-8 opacity-30">${ic("spark", "h-28 w-28", true)}</div><img src="brand/mascot.png" alt="" class="float absolute bottom-3 right-5 h-16 w-auto drop-shadow-xl"><p class="text-xs font-semibold uppercase tracking-widest text-white/80">Monthly Award</p><p class="display mt-1 text-2xl font-semibold leading-snug">今月のベスト投稿に<br>最大 ¥50,000</p><div class="mt-4 flex gap-1.5">${[0, 1, 2].map((i) => `<span class="h-1.5 rounded-full ${i === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50"}"></span>`).join("")}</div></div></div>
     <div class="mt-4 flex gap-2 overflow-x-auto px-5 pb-1">${cats.map((c) => `<button data-act="filter" data-cat="${c}" class="chip whitespace-nowrap ${searchFilter === c ? "bg-ink text-white" : "border border-line bg-surface text-ink/70"}">${c}</button>`).join("")}</div>
     ${list.length ? groups : `<p class="px-5 py-20 text-center text-sm text-muted">条件に合う案件がありません</p>`}<div class="h-6"></div>`;
 }
@@ -124,10 +124,10 @@ function searchCard(c) {
   const fav = favsOf(ME).includes(c.id);
   const already = appsByInf(ME).some((a) => a.campaignId === c.id);
   const rewardTxt = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? yen(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
-  return `<article class="tap w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl md:w-auto md:shrink border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
+  return `<article class="tap img-zoom w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl md:w-auto md:shrink border border-line bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
     <div class="relative"><button class="block w-full" data-act="open" data-id="${c.id}">${artTile(p, "h-44")}</button>${c.tags[0] ? `<span class="absolute left-3 top-3 badge bg-white/90 text-ink/80 backdrop-blur">${c.tags[0]}</span>` : ""}<button class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/85 backdrop-blur transition active:scale-90 ${fav ? "text-sunny-500" : "text-ink/40"}" data-act="fav" data-id="${c.id}">${ic("heart", "h-5 w-5", fav)}</button></div>
     <div class="p-4"><p class="text-[11px] font-semibold uppercase tracking-wider text-muted">${b.name}</p><h3 class="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-ink">${c.title}</h3>
-      <div class="mt-3 flex items-center gap-1.5 text-sunny-600">${ic("spark", "h-4 w-4", true)}<span class="text-sm font-bold">${rewardTxt}</span></div>
+      <div class="mt-3 flex items-center gap-1.5 text-sunny-600">${ic("spark", "h-4 w-4", true)}<span class="grad-num text-sm font-bold">${rewardTxt}</span></div>
       <div class="mt-3 flex items-center justify-between border-t border-line pt-3 text-xs text-muted"><span>応募 <b class="text-ink">${applied}</b>/${c.target}名</span><span>〆 ${c.deadline}</span></div>
       <button class="${already ? "btn-ghost pointer-events-none opacity-60" : "btn-primary"} mt-3 w-full py-2.5 text-sm" data-act="apply" data-id="${c.id}">${already ? "応募済み" : "応募する"}</button></div></article>`;
 }
@@ -161,7 +161,7 @@ function viewHistory() {
 // ---- メッセージ ----
 function viewInbox() {
   const msgs = S.inbox.map((m) => m.from === "me"
-    ? `<div class="flex justify-end"><div class="max-w-[78%] rounded-2xl rounded-br-md bg-sunny-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-soft">${m.text}</div></div>`
+    ? `<div class="flex justify-end"><div class="max-w-[78%] rounded-2xl rounded-br-md bg-sunrise px-4 py-2.5 text-sm leading-relaxed text-white shadow-lift">${m.text}</div></div>`
     : `<div class="flex items-end gap-2">${sunMark("h-7 w-7")}<div class="max-w-[78%] rounded-2xl rounded-bl-md border border-line bg-surface px-4 py-2.5 text-sm leading-relaxed text-ink">${m.text}</div></div>`).join("");
   return `<div class="flex h-[calc(100dvh-7.5rem)] flex-col md:h-[calc(100dvh-3.5rem)]"><div class="flex items-center gap-2 border-b border-line px-5 py-2.5 text-sm font-semibold text-ink">${sunMark("h-6 w-6")} Sunnyway 公式</div>
     <div class="flex-1 space-y-4 overflow-y-auto px-5 py-5">${msgs}</div>
@@ -172,7 +172,7 @@ function viewInbox() {
 function viewMe() {
   const me = influencer(ME);
   const items = [["profile", "edit", "プロフィール"], ["address", "pin", "住所"], ["sns", "link", "SNS連携"], ["bank", "card", "振込先"], ["transactions", "receipt", "取引履歴"], ["notify", "bellgear", "通知"]];
-  return `<div class="px-5 pb-6 pt-2"><div class="flex items-center gap-4"><div class="grid h-16 w-16 place-items-center rounded-full bg-sunrise p-0.5"><div class="grid h-full w-full place-items-center rounded-full bg-canvas text-sunny-500">${ic("spark", "h-7 w-7", true)}</div></div><div><div class="flex items-center gap-1.5"><p class="display text-xl font-semibold text-ink">${me.name}</p>${me.verified ? ic("check", "h-4 w-4 text-sunny-500") : ""}</div><p class="text-sm text-muted">@${me.handle} ・ ${fmt(me.followers)} フォロワー</p></div></div></div>
+  return `<div class="px-5 pb-6 pt-2"><div class="flex items-center gap-4"><div class="grid h-16 w-16 place-items-center rounded-full bg-sunrise p-0.5">${sunMark("h-full w-full")}</div><div><div class="flex items-center gap-1.5"><p class="display text-xl font-semibold text-ink">${me.name}</p>${me.verified ? ic("check", "h-4 w-4 text-sunny-500") : ""}</div><p class="text-sm text-muted">@${me.handle} ・ ${fmt(me.followers)} フォロワー</p></div></div></div>
     <div class="grid grid-cols-3 gap-3 px-5">${meStat("応募", appsByInf(ME).length)}${meStat("取り上げ", appsByInf(ME).filter(isPosted).length)}${meStat("報酬", yen(S.transactions.filter((t) => t.influencerId === ME).reduce((s, t) => s + t.amountYen, 0)))}</div>
     <p class="px-5 pb-2 pt-7 text-xs font-semibold uppercase tracking-wider text-muted">アカウント</p>
     <div class="mx-5 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">${items.map(([k, icon, label]) => `<button data-act="nav" data-href="#/me/${k}" class="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-canvas"><span class="grid h-9 w-9 place-items-center rounded-xl bg-sunny-50 text-sunny-600">${ic(icon, "h-5 w-5")}</span><span class="flex-1 text-sm font-medium text-ink">${label}</span>${k === "notify" && !me.notify ? `<span class="text-xs text-sunny-600">ONにしよう</span>` : ""}<span class="text-ink/25">${ic("chevron", "h-4 w-4")}</span></button>`).join("")}</div>
@@ -183,7 +183,7 @@ function viewMe() {
       <button data-act="logout" class="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-canvas"><span class="grid h-9 w-9 place-items-center rounded-xl bg-ink/5 text-ink/50">${ic("logout", "h-5 w-5")}</span><span class="flex-1 text-sm font-medium text-ink">ログアウト</span></button>
     </div><div class="h-8"></div>`;
 }
-const meStat = (label, value) => `<div class="rounded-2xl border border-line bg-surface p-3 text-center"><div class="display text-xl font-semibold text-ink">${value}</div><div class="mt-0.5 text-[11px] text-muted">${label}</div></div>`;
+const meStat = (label, value) => `<div class="rounded-2xl border border-line bg-surface p-3 text-center"><div class="grad-num text-xl font-bold">${value}</div><div class="mt-0.5 text-[11px] text-muted">${label}</div></div>`;
 const meSubTitle = (h) => ({ profile: "プロフィール", address: "住所", sns: "SNS連携", bank: "振込先", transactions: "取引履歴", notify: "通知" }[h.split("/")[2]] || "設定");
 function viewMeSub(h) {
   const me = influencer(ME), key = h.split("/")[2];

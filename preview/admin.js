@@ -23,34 +23,44 @@ window.addEventListener("hashchange", () => { if (authed()) render(); });
 
 // ---------- ログイン ----------
 function renderLogin() {
-  root.innerHTML = `<main class="fade grid min-h-[100dvh] place-items-center bg-canvas px-6">
-    <div class="w-full max-w-sm">
-      <div class="mb-8 text-center">${sunMark("mx-auto h-14 w-14")}<h1 class="display mt-4 text-2xl font-semibold text-ink">運営コンソール</h1><p class="mt-1.5 flex items-center justify-center gap-1.5 text-xs text-muted">${ic("shield", "h-4 w-4")} 関係者専用 ・ Sunnyway 運営</p></div>
-      <div class="card p-6">
-        <div class="space-y-3">
-          <div><label class="label">メールアドレス</label><input class="input" id="adm-email" value="admin@sunnyway.io"></div>
-          <div><label class="label">パスワード</label><input class="input" id="adm-pw" type="password" value="demo1234"></div>
-          <button class="btn-primary w-full" data-act="login">ログイン</button>
-        </div>
+  root.innerHTML = `<main class="fade grid min-h-[100dvh] place-items-center px-6 py-10">
+    <div class="w-full max-w-sm lg:max-w-4xl">
+      <div class="overflow-hidden rounded-3xl shadow-card lg:grid lg:grid-cols-2">
+        <section class="grad-move shine relative hidden overflow-hidden bg-sunrise p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <div class="breathe absolute -right-12 -top-14 opacity-25">${ic("spark", "h-48 w-48", true)}</div>
+          <div class="float absolute left-8 bottom-24 opacity-40">${ic("spark", "h-6 w-6", true)}</div>
+          <div><p class="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/80">Sunnyway Console</p>
+            <h2 class="display mt-3 text-3xl font-semibold leading-snug">コスメと、出会う。<br>その裏側を、ここから。</h2>
+            <p class="mt-4 text-sm leading-relaxed text-white/85">掲載・応募・報酬・実績を、<br>ひとつの画面で。</p></div>
+          <div class="flex items-end justify-between"><div class="space-y-1 text-xs text-white/75"><p>● 採用も報酬も2タップで完結</p><p>● 全操作に監査ログ</p><p>● 登録アドレスへ一斉メール</p></div><img src="brand/mascot.png" alt="" class="float h-24 w-auto drop-shadow-xl" style="animation-delay:.8s"></div>
+        </section>
+        <section class="glass p-7 sm:p-10">
+          <div class="mb-7 text-center">${sunMark("mx-auto h-14 w-14")}<h1 class="display mt-4 text-2xl font-semibold text-ink">運営コンソール</h1><p class="mt-1.5 flex items-center justify-center gap-1.5 text-xs text-muted">${ic("shield", "h-4 w-4")} 関係者専用 ・ Sunnyway 運営</p></div>
+          <div class="space-y-3">
+            <div><label class="label">メールアドレス</label><input class="input" id="adm-email" value="admin@sunnyway.io"></div>
+            <div><label class="label">パスワード</label><input class="input" id="adm-pw" type="password" value="demo1234"></div>
+            <button class="btn-primary w-full" data-act="login">ログイン</button>
+          </div>
+          <p class="mt-6 text-center text-xs text-muted">ブランドはこの画面にアクセスできません。<br>掲載は運営が代理で行います。</p>
+          <p class="mt-3 text-center text-xs"><a href="./" class="text-sunny-600 underline">← Sunnyway アプリへ</a></p>
+        </section>
       </div>
-      <p class="mt-5 text-center text-xs text-muted">ブランドはこの画面にアクセスできません。掲載は運営が代理で行います。</p>
-      <p class="mt-3 text-center text-xs"><a href="./" class="text-sunny-600 underline">← Sunnyway アプリへ</a></p>
     </div></main>`;
 }
 
 // ---------- シェル ----------
 const NAV = [["#/", "grid", "ダッシュボード"], ["#/campaigns", "bag", "掲載"], ["#/brands", "store", "ブランド"], ["#/influencers", "user", "インフルエンサー"], ["#/mails", "mail", "メール"]];
 function shell(active, body) {
-  root.innerHTML = `<div class="fade min-h-[100dvh] bg-canvas lg:flex">
-    <aside class="border-b border-line bg-surface lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
+  root.innerHTML = `<div class="fade min-h-[100dvh] lg:flex">
+    <aside class="border-b border-line bg-surface/80 backdrop-blur-xl lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
       <div class="flex items-center gap-2 px-6 py-5">${sunMark("h-8 w-8")}<div><p class="display font-semibold leading-none text-ink">Sunnyway</p><p class="mt-1 text-[11px] text-muted">運営コンソール</p></div></div>
-      <nav class="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col">${NAV.map(([href, icon, label]) => `<button data-act="nav" data-href="${href}" class="flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-medium ${href === (active === "dashboard" ? "#/" : "#/" + active) ? "bg-sunny-50 text-sunny-700" : "text-ink/60 hover:bg-canvas"}">${ic(icon, "h-5 w-5")}${label}</button>`).join("")}</nav>
+      <nav class="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col">${NAV.map(([href, icon, label]) => `<button data-act="nav" data-href="${href}" class="flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-medium ${href === (active === "dashboard" ? "#/" : "#/" + active) ? "bg-sunrise text-white shadow-lift" : "text-ink/60 hover:bg-canvas"}">${ic(icon, "h-5 w-5")}${label}</button>`).join("")}</nav>
       <div class="mt-auto hidden p-3 lg:block"><div class="flex items-center gap-2 rounded-xl bg-canvas px-3 py-2"><div class="grid h-8 w-8 place-items-center rounded-full bg-sunny-100 text-sunny-700 text-xs font-bold">運</div><div class="min-w-0 flex-1 text-xs"><p class="truncate font-semibold text-ink">運営担当</p><p class="truncate text-muted">admin@sunnyway.io</p></div><button class="text-muted hover:text-ink" data-act="logout" title="ログアウト">${ic("logout", "h-5 w-5")}</button></div></div>
     </aside>
     <main class="flex-1 px-6 py-8 lg:px-12 lg:py-10">${body}</main></div>`;
 }
-const head = (t, d) => `<div class="mb-7"><h1 class="display text-3xl font-semibold text-ink">${t}</h1>${d ? `<p class="mt-1.5 text-sm text-muted">${d}</p>` : ""}</div>`;
-const stat = (label, value, sub) => `<div class="card p-6"><div class="text-xs font-medium uppercase tracking-wider text-muted">${label}</div><div class="display mt-2 text-3xl font-semibold text-ink">${value}</div>${sub ? `<div class="mt-1 text-xs text-muted">${sub}</div>` : ""}</div>`;
+const head = (t, d, k) => `<div class="mb-7">${k ? `<p class="kicker mb-1.5">${k}</p>` : ""}<h1 class="display text-3xl font-semibold text-ink">${t}</h1>${d ? `<p class="mt-1.5 text-sm text-muted">${d}</p>` : ""}</div>`;
+const stat = (label, value, sub) => `<div class="card hover-lift p-6"><div class="text-xs font-medium uppercase tracking-wider text-muted">${label}</div><div class="grad-num mt-2 text-3xl font-bold">${value}</div>${sub ? `<div class="mt-1 text-xs text-muted">${sub}</div>` : ""}</div>`;
 
 function dashboard() {
   const openC = S.campaigns.filter((c) => c.status === "OPEN").length;
@@ -58,7 +68,7 @@ function dashboard() {
   const reach = postedAll.reduce((s, a) => s + a.postReach, 0);
   const paid = S.transactions.filter((t) => t.status === "振込済み").reduce((s, t) => s + t.amountYen, 0);
   const recent = S.campaigns.slice().reverse().slice(0, 5);
-  return head("ダッシュボード", "プラットフォーム全体のサマリー") + `<div class="grid grid-cols-2 gap-4 lg:grid-cols-3">${stat("ブランド", S.brands.length)}${stat("インフルエンサー", S.influencers.length)}${stat("募集中の掲載", openC)}${stat("取り上げ件数", postedAll.length)}${stat("合計リーチ", fmt(reach))}${stat("報酬支払額", yen(paid), "振込済みの総額")}</div>
+  return head("ダッシュボード", "プラットフォーム全体のサマリー", "Overview") + `<div class="grid grid-cols-2 gap-4 lg:grid-cols-3">${stat("ブランド", S.brands.length)}${stat("インフルエンサー", S.influencers.length)}${stat("募集中の掲載", openC)}${stat("取り上げ件数", postedAll.length)}${stat("合計リーチ", fmt(reach))}${stat("報酬支払額", yen(paid), "振込済みの総額")}</div>
     <div class="mt-8 grid gap-6 lg:grid-cols-2">
       <section class="card p-6"><div class="mb-4 flex items-center justify-between"><h2 class="display font-semibold text-ink">最近の掲載</h2><button class="text-sm font-medium text-sunny-600" data-act="nav" data-href="#/campaigns">すべて</button></div><div class="space-y-1">${recent.map((c) => `<button class="flex w-full items-center gap-3 rounded-2xl p-2 text-left hover:bg-canvas" data-act="nav" data-href="#/campaign/${c.id}"><div class="h-12 w-12 shrink-0 overflow-hidden rounded-xl">${artTile(product(c.productId), "h-12")}</div><div class="min-w-0 flex-1"><p class="truncate text-sm font-semibold text-ink">${c.title}</p><p class="truncate text-xs text-muted">${brand(c.brandId).name}</p></div><span class="text-sm font-semibold text-sunny-600">${postedApps(c.id).length}/${c.target}</span></button>`).join("")}</div></section>
       <section class="card p-6"><h2 class="display mb-4 font-semibold text-ink">操作ログ（監査）</h2><ul class="space-y-3 text-sm">${S.audit.slice(0, 6).map((l) => `<li class="flex items-center justify-between gap-2"><span class="truncate text-ink/70"><span class="rounded bg-sunny-50 px-1.5 py-0.5 font-mono text-xs text-sunny-700">${l.action}</span> ${l.actor}</span><span class="shrink-0 text-xs text-muted">${l.when}</span></li>`).join("")}</ul></section>
@@ -67,7 +77,7 @@ function dashboard() {
 function campaigns() {
   const rows = S.campaigns.slice().reverse().map((c) => { const pc = postedApps(c.id).length, pct = Math.min(100, Math.round((pc / Math.max(1, c.target)) * 100));
     return `<button class="card flex w-full items-center gap-4 p-4 text-left transition hover:shadow-card" data-act="nav" data-href="#/campaign/${c.id}"><div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl">${artTile(product(c.productId), "h-16")}</div><div class="min-w-0 flex-1"><div class="flex items-center gap-2"><h3 class="truncate font-semibold text-ink">${c.title}</h3>${pill(CSTATUS[c.status], CSTYLE[c.status])}</div><p class="mt-0.5 truncate text-sm text-muted">${brand(c.brandId).name} ・ ${REWARD[c.rewardType]}</p><div class="mt-2 flex items-center gap-3"><div class="h-1.5 w-32 overflow-hidden rounded-full bg-ink/5"><div class="h-full rounded-full bg-sunrise" style="width:${pct}%"></div></div><span class="text-xs font-medium text-ink/70">${pc}/${c.target}人 取り上げ</span></div></div>${ic("chevron", "h-5 w-5 text-ink/20")}</button>`; }).join("");
-  return head("掲載（キャンペーン）", "運営がブランドの代理で作成。") + `<div class="space-y-3">${rows}</div>`;
+  return head("掲載（キャンペーン）", "運営がブランドの代理で作成。", "Campaigns") + `<div class="space-y-3">${rows}</div>`;
 }
 function report(id) {
   const c = campaign(id); if (!c) return head("見つかりません");
@@ -90,12 +100,12 @@ function report(id) {
 }
 function brands() {
   const rows = S.brands.map((b) => `<tr class="border-t border-line hover:bg-canvas"><td class="px-5 py-4"><div class="font-semibold text-ink">${b.name}</div><div class="text-xs text-muted">${b.notes}</div></td><td class="px-5 py-4 text-sm text-ink/70">${b.contactName}<div class="text-xs text-muted">${b.contactEmail}</div></td><td class="px-5 py-4 text-sm text-ink/70">${b.monthlyFeeYen > 0 ? yen(b.monthlyFeeYen) : "—"}</td><td class="px-5 py-4 text-center text-sm">${S.products.filter((p) => p.brandId === b.id).length}</td><td class="px-5 py-4 text-center text-sm">${S.campaigns.filter((c) => c.brandId === b.id).length}</td><td class="px-5 py-4"><div class="flex items-center justify-end gap-2">${b.contactEmail ? `<button class="btn-ghost px-3 py-2 text-xs" data-act="mail-go" data-email="${b.contactEmail}">${ic("mail", "h-3.5 w-3.5")} メール</button>` : ""}<button class="btn-ghost px-3 py-2 text-xs" data-act="edit-brand" data-id="${b.id}">${ic("edit", "h-3.5 w-3.5")} 編集</button></div></td></tr>`).join("");
-  return head("ブランド", "運営が管理（ブランド自身は管理画面に入れません）") + `<div class="card overflow-x-auto"><table class="w-full"><thead><tr class="text-left text-xs uppercase tracking-wider text-muted"><th class="px-5 py-3">ブランド</th><th class="px-5 py-3">担当者</th><th class="px-5 py-3">月額</th><th class="px-5 py-3 text-center">商品</th><th class="px-5 py-3 text-center">掲載</th><th class="px-5 py-3 text-right">操作</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return head("ブランド", "運営が管理（ブランド自身は管理画面に入れません）", "Brands") + `<div class="card overflow-x-auto"><table class="w-full"><thead><tr class="text-left text-xs uppercase tracking-wider text-muted"><th class="px-5 py-3">ブランド</th><th class="px-5 py-3">担当者</th><th class="px-5 py-3">月額</th><th class="px-5 py-3 text-center">商品</th><th class="px-5 py-3 text-center">掲載</th><th class="px-5 py-3 text-right">操作</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function influencers() {
   const rows = S.influencers.map((inf) => { const mine = appsByInf(inf.id), pc = mine.filter(isPosted);
     return `<tr class="border-t border-line hover:bg-canvas"><td class="px-5 py-4"><div class="flex items-center gap-2 font-semibold text-ink">@${inf.handle}${inf.verified ? ic("check", "h-4 w-4 text-sunny-500") : ""}</div><div class="text-xs text-muted">${inf.name} ・ ${infEmail(inf)}</div></td><td class="px-5 py-4 text-sm text-ink/70">${PLATFORM[inf.platform]}</td><td class="px-5 py-4 text-right text-sm">${fmt(inf.followers)}</td><td class="px-5 py-4 text-center text-sm">${mine.length}</td><td class="px-5 py-4 text-center text-sm font-semibold text-sunny-600">${pc.length}</td><td class="px-5 py-4 text-right text-sm">${fmt(pc.reduce((s, a) => s + a.postReach, 0))}</td><td class="px-5 py-4"><div class="flex items-center justify-end gap-2"><button class="btn-ghost px-3 py-2 text-xs" data-act="mail-go" data-email="${infEmail(inf)}">${ic("mail", "h-3.5 w-3.5")} メール</button><button class="btn-ghost px-3 py-2 text-xs ${inf.verified ? "text-sunny-600" : ""}" data-act="verify" data-id="${inf.id}">${ic("check", "h-3.5 w-3.5")} ${inf.verified ? "認証済み" : "認証する"}</button></div></td></tr>`; }).join("");
-  return `<div class="mb-7 flex flex-wrap items-end justify-between gap-3"><div><h1 class="display text-3xl font-semibold text-ink">インフルエンサー</h1><p class="mt-1.5 text-sm text-muted">登録者の一覧と実績</p></div><button class="btn-primary" data-act="mail-go" data-email="ALL_INFLUENCERS">${ic("mail", "h-4 w-4")} 全員にメール</button></div>` + `<div class="card overflow-x-auto"><table class="w-full"><thead><tr class="text-left text-xs uppercase tracking-wider text-muted"><th class="px-5 py-3">ハンドル</th><th class="px-5 py-3">媒体</th><th class="px-5 py-3 text-right">フォロワー</th><th class="px-5 py-3 text-center">応募</th><th class="px-5 py-3 text-center">取り上げ</th><th class="px-5 py-3 text-right">累計リーチ</th><th class="px-5 py-3 text-right">操作</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="mb-7 flex flex-wrap items-end justify-between gap-3"><div><p class="kicker mb-1.5">Influencers</p><h1 class="display text-3xl font-semibold text-ink">インフルエンサー</h1><p class="mt-1.5 text-sm text-muted">登録者の一覧と実績</p></div><button class="btn-primary" data-act="mail-go" data-email="ALL_INFLUENCERS">${ic("mail", "h-4 w-4")} 全員にメール</button></div>` + `<div class="card overflow-x-auto"><table class="w-full"><thead><tr class="text-left text-xs uppercase tracking-wider text-muted"><th class="px-5 py-3">ハンドル</th><th class="px-5 py-3">媒体</th><th class="px-5 py-3 text-right">フォロワー</th><th class="px-5 py-3 text-center">応募</th><th class="px-5 py-3 text-center">取り上げ</th><th class="px-5 py-3 text-right">累計リーチ</th><th class="px-5 py-3 text-right">操作</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 // ---------- メール（登録アドレス宛て送信・デモは記録のみ） ----------
@@ -105,7 +115,7 @@ const infEmail = (inf) => inf.email || `${inf.handle.split("_")[0]}@influencer.t
 
 function mails() {
   const history = S.mails.length ? `<ul class="divide-y divide-line">${S.mails.map((m) => `<li class="px-6 py-4"><div class="flex flex-wrap items-center justify-between gap-2"><div class="min-w-0"><span class="font-semibold text-ink">${m.subject}</span><span class="ml-2 text-xs text-muted">→ ${m.to}</span></div><div class="flex shrink-0 items-center gap-2"><span class="badge bg-sunny-50 text-sunny-700">記録のみ</span><span class="text-xs text-muted">${m.when}</span></div></div><p class="mt-1 line-clamp-2 whitespace-pre-line text-sm text-ink/70">${m.body}</p></li>`).join("")}</ul>` : `<p class="px-6 py-10 text-center text-sm text-muted">まだ送信履歴はありません</p>`;
-  return head("メール", "登録アドレスへのお知らせ送信と送信履歴") + `<div class="grid gap-6 lg:grid-cols-5">
+  return head("メール", "登録アドレスへのお知らせ送信と送信履歴", "Mail Center") + `<div class="grid gap-6 lg:grid-cols-5">
     <section class="card p-6 lg:col-span-2"><h2 class="display mb-1 font-semibold text-ink">メールを作成</h2><p class="mb-4 text-xs text-muted">デモのため内容は送信履歴への記録のみ（本番はプロバイダ設定で実送信）。</p>
       <div class="space-y-3">
         <div><label class="label">宛先 *</label><select class="input" id="mail-to">
