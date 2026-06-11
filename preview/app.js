@@ -88,8 +88,8 @@ function appShell(active, header, body) {
   const nav = `<nav class="flex shrink-0 border-t border-line bg-surface/85 backdrop-blur-xl md:w-[84px] md:flex-col md:border-r md:border-t-0 lg:w-60" style="padding-bottom:env(safe-area-inset-bottom)">
     <button class="hidden items-center gap-2 px-4 py-5 md:flex md:justify-center lg:justify-start" data-act="nav" data-href="#/">${sunMark("h-9 w-9")}<span class="display hidden text-lg font-bold text-ink lg:inline">Sunnyway</span></button>
     <div class="flex flex-1 md:flex-none md:flex-col md:gap-1 md:px-3">${items}</div></nav>`;
-  return `<div class="screen-in flex min-h-[100dvh] flex-col md:flex-row-reverse">
-    <div class="flex min-h-0 flex-1 flex-col">${header}<main class="flex-1 overflow-y-auto"><div class="mx-auto max-w-md md:max-w-3xl lg:max-w-5xl">${body}</div></main></div>
+  return `<div class="screen-in flex h-[100dvh] flex-col md:flex-row-reverse">
+    <div class="flex min-h-0 flex-1 flex-col">${header}<main class="flex-1 overflow-y-auto"><div class="mx-auto min-h-full max-w-md md:max-w-3xl lg:max-w-5xl">${body}</div></main></div>
     ${nav}</div>`;
 }
 const navItem = (href, icon, label, on) => `<button data-act="nav" data-href="${href}" class="tap relative flex flex-1 flex-col items-center gap-1 py-2.5 md:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:py-3 ${on ? "text-sunny-600 lg:bg-sunny-50" : "text-muted lg:hover:bg-canvas"}">${on ? '<span class="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise lg:hidden"></span>' : ""}<span class="grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunny-50 lg:bg-transparent" : "scale-95 lg:scale-100"}">${ic(icon, "h-[22px] w-[22px]", on)}</span><span class="text-[10px] font-medium tracking-wide lg:text-sm">${label}</span></button>`;
