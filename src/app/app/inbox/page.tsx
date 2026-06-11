@@ -19,7 +19,7 @@ export default async function InboxPage() {
         {messages.map((m) => m.fromStaff ? (
           <div key={m.id} className="flex items-end gap-2"><SunMark className="h-7 w-7" /><div className="max-w-[78%] rounded-2xl rounded-bl-md border border-line bg-surface px-4 py-2.5 text-sm leading-relaxed text-ink">{m.text}</div></div>
         ) : (
-          <div key={m.id} className="flex justify-end"><div className="max-w-[78%] rounded-2xl rounded-br-md bg-sunny-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-soft">{m.text}</div></div>
+          <div key={m.id} className="flex justify-end"><div className="max-w-[78%] rounded-2xl rounded-br-md bg-sunrise px-4 py-2.5 text-sm leading-relaxed text-white shadow-lift">{m.text}</div></div>
         ))}
       </div>
       <MessageForm />

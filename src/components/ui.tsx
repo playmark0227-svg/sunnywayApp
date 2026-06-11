@@ -14,9 +14,9 @@ export function PageHeader({ title, description, action }: { title: string; desc
 
 export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
   return (
-    <div className="card p-6">
+    <div className="card hover-lift p-6">
       <div className="text-xs font-medium uppercase tracking-wider text-muted">{label}</div>
-      <div className="display mt-2 text-3xl font-semibold text-ink">{value}</div>
+      <div className="grad-num mt-2 text-3xl font-bold">{value}</div>
       {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
     </div>
   );

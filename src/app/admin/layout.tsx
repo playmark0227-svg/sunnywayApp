@@ -6,8 +6,8 @@ import { SunMark, Icon } from "@/components/Icon";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdmin();
   return (
-    <div className="min-h-[100dvh] bg-canvas lg:flex">
-      <aside className="border-b border-line bg-surface lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
+    <div className="min-h-[100dvh] lg:flex">
+      <aside className="border-b border-line bg-surface/80 backdrop-blur-xl lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
         <div className="flex items-center gap-2 px-6 py-5">
           <SunMark className="h-8 w-8" />
           <div><p className="display font-semibold leading-none text-ink">Sunnyway</p><p className="mt-1 text-[11px] text-muted">運営コンソール</p></div>

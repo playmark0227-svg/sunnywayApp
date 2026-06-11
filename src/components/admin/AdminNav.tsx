@@ -19,7 +19,7 @@ export function AdminNav() {
   return (
     <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col">
       {NAV.map((n) => (
-        <Link key={n.href} href={n.href} className={`flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-medium ${on(n.href) ? "bg-sunny-50 text-sunny-700" : "text-ink/60 hover:bg-canvas"}`}>
+        <Link key={n.href} href={n.href} className={`flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-medium ${on(n.href) ? "bg-sunrise text-white shadow-lift" : "text-ink/60 hover:bg-canvas"}`}>
           <Icon name={n.icon} className="h-5 w-5" /> {n.label}
         </Link>
       ))}

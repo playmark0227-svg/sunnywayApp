@@ -40,7 +40,7 @@ export function BottomNav() {
               className={`tap relative flex flex-1 flex-col items-center gap-1 py-2.5 md:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:py-3 ${on ? "text-sunny-600 lg:bg-sunny-50" : "text-muted lg:hover:bg-canvas"}`}
             >
               {on && <span className="absolute top-0 h-[3px] w-8 rounded-full bg-sunrise lg:hidden" />}
-              <span className={`grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunny-50 lg:bg-transparent" : "scale-95 lg:scale-100"}`}>
+              <span className={`grid h-9 w-9 place-items-center rounded-full transition-all lg:h-auto lg:w-auto lg:rounded-none ${on ? "bg-sunrise text-white shadow-lift lg:bg-transparent lg:text-sunny-600 lg:shadow-none" : "scale-95 lg:scale-100"}`}>
                 <Icon name={t.icon} className="h-[22px] w-[22px]" fill={on} />
               </span>
               <span className="text-[10px] font-medium tracking-wide lg:text-sm">{t.label}</span>

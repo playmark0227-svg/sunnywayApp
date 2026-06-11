@@ -60,7 +60,7 @@ body {
       transition active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-sunny-500 text-white shadow-lift hover:bg-sunny-600;
+    @apply btn bg-sunrise text-white shadow-lift;
   }
   .btn-dark {
     @apply btn bg-ink text-white hover:bg-ink/90;
@@ -217,3 +217,27 @@ html {
   transform: translateX(-220%) skewX(-18deg); transition: transform .55s ease; pointer-events: none;
 }
 .btn-primary:hover::after, .btn-primary:active::after { transform: translateX(340%) skewX(-18deg); }
+
+/* ============ プレミアム質感 ============ */
+/* オーロラ背景: コンテンツの背後でゆっくり漂う暖色グラデーション */
+body::before {
+  content: ""; position: fixed; inset: -22%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 12% 8%, rgba(252,203,152,.38), transparent 70%),
+    radial-gradient(30% 26% at 88% 14%, rgba(255,182,200,.30), transparent 70%),
+    radial-gradient(36% 32% at 80% 90%, rgba(242,107,31,.12), transparent 70%),
+    radial-gradient(26% 24% at 14% 88%, rgba(124,179,66,.10), transparent 72%);
+  animation: aurora 24s ease-in-out infinite alternate;
+}
+@keyframes aurora { from { transform: translate3d(-2%,-1.5%,0) scale(1); } to { transform: translate3d(2%,2%,0) scale(1.07); } }
+.glass { border: 1px solid rgba(255,255,255,.55); background: rgba(255,255,255,.66); backdrop-filter: blur(20px) saturate(1.15); -webkit-backdrop-filter: blur(20px) saturate(1.15); }
+.kicker { @apply font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-sunny-600; }
+.grad-num { @apply font-display bg-sunrise bg-clip-text text-transparent; }
+.hairline-b { position: relative; }
+.hairline-b::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, rgba(242,107,31,.28), transparent); }
+.hover-lift { transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease; }
+.hover-lift:hover { transform: translateY(-3px); @apply shadow-card; }
+.img-zoom img { transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.img-zoom:hover img { transform: scale(1.06); }
+.btn-primary:hover { filter: saturate(1.06) brightness(1.04); }
+.tick { @apply inline-block h-3.5 w-1 shrink-0 rounded-full bg-sunrise; }

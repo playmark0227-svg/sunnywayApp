@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireInfluencer } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions/auth";
-import { Icon } from "@/components/Icon";
+import { Icon, SunMark } from "@/components/Icon";
 import { CountUp } from "@/components/CountUp";
 import { num, isPosted } from "@/lib/labels";
 
@@ -33,14 +33,14 @@ export default async function MePage() {
 
       <div className="px-5 pb-6 pt-2">
         <div className="flex items-center gap-4">
-          <div className="grid h-16 w-16 place-items-center rounded-full bg-sunrise p-0.5"><div className="grid h-full w-full place-items-center rounded-full bg-canvas text-sunny-500"><Icon name="spark" className="h-7 w-7" fill /></div></div>
+          <div className="rounded-full bg-sunrise p-0.5 shadow-lift"><SunMark className="h-16 w-16" /></div>
           <div><div className="flex items-center gap-1.5"><p className="display text-xl font-semibold text-ink">{profile.user.name}</p>{profile.verified && <Icon name="check" className="h-4 w-4 text-sunny-500" />}</div><p className="text-sm text-muted">@{profile.handle} ・ {num(profile.followers)} フォロワー</p></div>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3 px-5">
         {[{ l: "応募", n: profile.applications.length, yen: false }, { l: "取り上げ", n: posted, yen: false }, { l: "報酬", n: reward, yen: true }].map((s) => (
-          <div key={s.l} className="rounded-2xl border border-line bg-surface p-3 text-center"><div className="display text-xl font-semibold text-ink"><CountUp value={s.n} prefix={s.yen ? "¥" : ""} /></div><div className="mt-0.5 text-[11px] text-muted">{s.l}</div></div>
+          <div key={s.l} className="rounded-2xl border border-line bg-surface p-3 text-center"><div className="grad-num text-xl font-bold"><CountUp value={s.n} prefix={s.yen ? "¥" : ""} /></div><div className="mt-0.5 text-[11px] text-muted">{s.l}</div></div>
         ))}
       </div>
 
