@@ -251,3 +251,19 @@ model AuditLog {
   @@index([actorId])
   @@index([createdAt])
 }
+
+// ===== メール送信ログ =====
+// 運営が登録アドレスへ送ったメールの記録。
+// 送信プロバイダ（RESEND_API_KEY）未設定の環境では内容を記録のみ（status=LOGGED）。
+
+model MailLog {
+  id        String   @id @default(cuid())
+  to        String   // 宛先メールアドレス
+  subject   String
+  body      String
+  status    String   @default("LOGGED") // SENT / LOGGED / ERROR
+  error     String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

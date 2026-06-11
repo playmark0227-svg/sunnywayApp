@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, EmptyState } from "@/components/ui";
 import { Icon } from "@/components/Icon";
+import { toggleInfluencerVerifiedAction } from "@/lib/actions/admin";
 import { platformLabel, num } from "@/lib/labels";
 
 export default async function InfluencersPage() {
@@ -12,11 +14,15 @@ export default async function InfluencersPage() {
 
   return (
     <div>
-      <PageHeader title="インフルエンサー" description="登録者の一覧と実績" />
+      <PageHeader
+        title="インフルエンサー"
+        description="登録者の一覧と実績"
+        action={<Link href="/admin/mails?to=ALL_INFLUENCERS" className="btn-primary"><Icon name="mail" className="h-4 w-4" /> 全員にメール</Link>}
+      />
       {influencers.length === 0 ? <EmptyState>まだ登録がありません。</EmptyState> : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead><tr className="text-left text-xs uppercase tracking-wider text-muted"><th className="px-5 py-3">ハンドル</th><th className="px-5 py-3">媒体</th><th className="px-5 py-3 text-right">フォロワー</th><th className="px-5 py-3 text-center">応募</th><th className="px-5 py-3 text-center">取り上げ</th><th className="px-5 py-3 text-right">累計リーチ</th></tr></thead>
+            <thead><tr className="text-left text-xs uppercase tracking-wider text-muted"><th className="px-5 py-3">ハンドル</th><th className="px-5 py-3">媒体</th><th className="px-5 py-3 text-right">フォロワー</th><th className="px-5 py-3 text-center">応募</th><th className="px-5 py-3 text-center">取り上げ</th><th className="px-5 py-3 text-right">累計リーチ</th><th className="px-5 py-3 text-right">操作</th></tr></thead>
             <tbody>
               {influencers.map((inf) => {
                 const s = map.get(inf.id);
@@ -28,6 +34,17 @@ export default async function InfluencersPage() {
                     <td className="px-5 py-4 text-center text-sm">{inf._count.applications}</td>
                     <td className="px-5 py-4 text-center text-sm font-semibold text-sunny-600">{s?.count ?? 0}</td>
                     <td className="px-5 py-4 text-right text-sm">{num(s?.reach ?? 0)}</td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/admin/mails?to=${encodeURIComponent(inf.user.email)}`} className="btn-ghost px-3 py-2 text-xs"><Icon name="mail" className="h-3.5 w-3.5" /> メール</Link>
+                        <form action={toggleInfluencerVerifiedAction}>
+                          <input type="hidden" name="profileId" value={inf.id} />
+                          <button className={`btn-ghost px-3 py-2 text-xs ${inf.verified ? "text-sunny-600" : ""}`} title={inf.verified ? "認証を外す" : "認証バッジを付ける"}>
+                            <Icon name="check" className="h-3.5 w-3.5" /> {inf.verified ? "認証済み" : "認証する"}
+                          </button>
+                        </form>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}

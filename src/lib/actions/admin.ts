@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { recordAudit } from "@/lib/audit";
+import { sendMail } from "@/lib/mail";
 import type { FormState } from "@/lib/actions/auth";
 
 // すべての管理アクションは requireAdmin() でサーバー側再検証 → 監査ログ記録、を徹底する。
@@ -227,4 +228,164 @@ export async function sendbackApplicationAction(formData: FormData): Promise<voi
   const app = await prisma.application.update({ where: { id }, data: { status: "APPROVED" }, select: { campaignId: true } });
   await recordAudit({ actorId: admin.userId, action: "application.sendback", target: id });
   revalidatePath(`/admin/campaigns/${app.campaignId}`);
+}
+
+// ============================================================
+// 編集（ブランド / 商品 / 掲載）
+// ============================================================
+
+export async function updateBrandAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("brandId") ?? "");
+  if (!id) return { error: "対象が見つかりません" };
+  const parsed = brandSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "入力エラー" };
+  }
+  const brand = await prisma.brand.update({
+    where: { id },
+    data: { ...parsed.data, active: formData.get("active") === "on" },
+  });
+  await recordAudit({ actorId: admin.userId, action: "brand.update", target: brand.id, meta: { name: brand.name } });
+  revalidatePath("/admin/brands");
+  return { ok: true };
+}
+
+export async function updateProductAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("productId") ?? "");
+  if (!id) return { error: "対象が見つかりません" };
+  const parsed = productSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "入力エラー" };
+  }
+  const product = await prisma.product.update({ where: { id }, data: parsed.data });
+  await recordAudit({ actorId: admin.userId, action: "product.update", target: product.id, meta: { name: product.name } });
+  revalidatePath("/admin/products");
+  revalidatePath("/app");
+  return { ok: true };
+}
+
+/** 掲載内容の編集。商品を変えた場合はブランドも商品に合わせて引き直す。 */
+export async function updateCampaignAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("campaignId") ?? "");
+  if (!id) return { error: "対象が見つかりません" };
+  const raw = {
+    ...Object.fromEntries(formData),
+    billingModels: formData.getAll("billingModels").map(String),
+  };
+  const parsed = campaignSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "入力エラー" };
+  }
+  const product = await prisma.product.findUnique({ where: { id: parsed.data.productId } });
+  if (!product) return { error: "商品が見つかりません" };
+
+  const campaign = await prisma.campaign.update({
+    where: { id },
+    data: {
+      brandId: product.brandId,
+      productId: product.id,
+      title: parsed.data.title,
+      brief: parsed.data.brief,
+      targetInfluencers: parsed.data.targetInfluencers,
+      rewardType: parsed.data.rewardType,
+      rewardYen: parsed.data.rewardYen,
+      billingModels: parsed.data.billingModels.join(","),
+      campaignFeeYen: parsed.data.campaignFeeYen,
+      salesCommissionPct: parsed.data.salesCommissionPct,
+      media: parsed.data.media,
+      tags: parsed.data.tags,
+      deadline: parsed.data.deadline,
+    },
+  });
+  await recordAudit({ actorId: admin.userId, action: "campaign.update", target: campaign.id, meta: { title: campaign.title } });
+  revalidatePath(`/admin/campaigns/${campaign.id}`);
+  revalidatePath("/admin/campaigns");
+  revalidatePath("/app");
+  return { ok: true };
+}
+
+/** インフルエンサーの認証バッジを付け外しする。 */
+export async function toggleInfluencerVerifiedAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("profileId") ?? "");
+  if (!id) return;
+  const cur = await prisma.influencerProfile.findUnique({ where: { id }, select: { verified: true } });
+  if (!cur) return;
+  await prisma.influencerProfile.update({ where: { id }, data: { verified: !cur.verified } });
+  await recordAudit({ actorId: admin.userId, action: "influencer.verify", target: id, meta: { verified: !cur.verified } });
+  revalidatePath("/admin/influencers");
+}
+
+// ============================================================
+// メール送信（登録アドレス宛て）
+// ============================================================
+
+const mailSchema = z.object({
+  to: z.string().min(1, "宛先を選択してください"),
+  subject: z.string().min(1, "件名を入力してください"),
+  body: z.string().min(1, "本文を入力してください"),
+});
+
+/**
+ * 運営からのメール送信。
+ * to に "ALL_INFLUENCERS" を指定すると登録インフルエンサー全員へ一斉送信する。
+ * 送信プロバイダ未設定の環境では MailLog への記録のみ（画面にその旨を表示）。
+ */
+export async function sendMailAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const admin = await requireAdmin();
+  const parsed = mailSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "入力エラー" };
+  }
+  const { to, subject, body } = parsed.data;
+
+  let recipients: string[];
+  if (to === "ALL_INFLUENCERS") {
+    const users = await prisma.user.findMany({ where: { role: "INFLUENCER" }, select: { email: true } });
+    recipients = users.map((u) => u.email);
+    if (recipients.length === 0) return { error: "送信先のインフルエンサーがいません" };
+  } else {
+    if (!z.string().email().safeParse(to).success) return { error: "宛先メールアドレスの形式が正しくありません" };
+    recipients = [to];
+  }
+
+  let sent = 0, logged = 0, failed = 0;
+  for (const rcpt of recipients) {
+    const r = await sendMail({ to: rcpt, subject, body });
+    if (r.status === "SENT") sent++;
+    else if (r.status === "LOGGED") logged++;
+    else failed++;
+  }
+
+  await recordAudit({
+    actorId: admin.userId,
+    action: "mail.send",
+    target: to === "ALL_INFLUENCERS" ? "all-influencers" : to,
+    meta: { subject, recipients: recipients.length, sent, logged, failed },
+  });
+  revalidatePath("/admin/mails");
+
+  if (failed > 0) return { error: `${failed} 件の送信に失敗しました（送信履歴を確認してください）` };
+  const n = recipients.length;
+  return {
+    ok: true,
+    message: sent > 0
+      ? `${n} 件送信しました`
+      : `${n} 件を送信履歴に記録しました（メールプロバイダ未設定のため実送信はスキップ）`,
+  };
 }

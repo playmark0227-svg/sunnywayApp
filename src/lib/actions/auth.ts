@@ -10,7 +10,7 @@ import {
   destroySession,
 } from "@/lib/auth";
 
-export type FormState = { error?: string; ok?: boolean } | undefined;
+export type FormState = { error?: string; ok?: boolean; message?: string } | undefined;
 
 const loginSchema = z.object({
   email: z.string().email("メールアドレスの形式が正しくありません"),

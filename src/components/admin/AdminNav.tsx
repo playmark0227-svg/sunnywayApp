@@ -10,6 +10,7 @@ const NAV = [
   { href: "/admin/products", icon: "tag", label: "商品" },
   { href: "/admin/brands", icon: "store", label: "ブランド" },
   { href: "/admin/influencers", icon: "user", label: "インフルエンサー" },
+  { href: "/admin/mails", icon: "mail", label: "メール" },
 ];
 
 export function AdminNav() {

@@ -6,6 +6,7 @@ import { Icon, Thumb, ART_BY_CATEGORY } from "@/components/Icon";
 import { AppBadge, CampaignBadge } from "@/components/ui";
 import { CountUp } from "@/components/CountUp";
 import { decideApplicationAction, confirmApplicationAction, sendbackApplicationAction, updateCampaignStatusAction } from "@/lib/actions/admin";
+import { CampaignEditButton } from "@/components/AdminForms";
 import { rewardTypeLabel, billingModelLabel, campaignStatusLabel, parseBillingModels, num, yen } from "@/lib/labels";
 
 const POSTED = ["SUBMITTED", "COMPLETED"];
@@ -18,6 +19,7 @@ export default async function CampaignReport({ params }: { params: Promise<{ id:
     include: { brand: true, product: true, applications: { orderBy: { createdAt: "desc" }, include: { influencer: { include: { user: { select: { name: true } } } } } } },
   });
   if (!c) notFound();
+  const products = await prisma.product.findMany({ orderBy: { name: "asc" }, include: { brand: { select: { name: true } } } });
   const posted = c.applications.filter((a) => POSTED.includes(a.status));
   const approved = c.applications.filter((a) => a.status === "APPROVED");
   const applied = c.applications.filter((a) => a.status === "APPLIED");
@@ -57,6 +59,12 @@ export default async function CampaignReport({ params }: { params: Promise<{ id:
             {(["OPEN", "CLOSED", "COMPLETED"] as const).map((s) => (
               <form key={s} action={updateCampaignStatusAction}><input type="hidden" name="campaignId" value={c.id} /><input type="hidden" name="status" value={s} /><button disabled={c.status === s} className="btn-ghost px-3 py-2 text-xs">{campaignStatusLabel[s]}</button></form>
             ))}
+          </div>
+          <div className="mt-4 border-t border-line pt-4">
+            <CampaignEditButton
+              campaign={{ id: c.id, productId: c.productId, title: c.title, brief: c.brief, media: c.media, tags: c.tags, deadline: c.deadline, targetInfluencers: c.targetInfluencers, rewardType: c.rewardType, rewardYen: c.rewardYen, billingModels: c.billingModels, campaignFeeYen: c.campaignFeeYen, salesCommissionPct: c.salesCommissionPct }}
+              products={products.map((p) => ({ id: p.id, name: p.name, brandName: p.brand.name }))}
+            />
           </div>
         </section>
 
