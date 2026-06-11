@@ -31,9 +31,10 @@ const config: Config = {
       },
       borderRadius: { xl2: "1.25rem", "3xl": "1.75rem" },
       boxShadow: {
-        soft: "0 1px 2px rgba(26,26,46,.04), 0 4px 16px rgba(26,26,46,.05)",
-        card: "0 2px 6px rgba(26,26,46,.05), 0 12px 32px -12px rgba(26,26,46,.14)",
-        lift: "0 8px 30px -8px rgba(242,107,31,.4)",
+        soft: "0 1px 2px rgba(116,46,19,.05), 0 6px 22px -8px rgba(116,46,19,.10)",
+        card: "0 2px 8px rgba(116,46,19,.06), 0 18px 44px -16px rgba(116,46,19,.18)",
+        lift: "0 4px 14px -4px rgba(242,107,31,.45), 0 14px 36px -10px rgba(242,107,31,.30)",
+        glow: "0 10px 36px -10px rgba(242,107,31,.45), 0 2px 10px -2px rgba(255,107,125,.35)",
       },
       backgroundImage: {
         sunrise: "linear-gradient(135deg,#F26B1F 0%,#F8704A 50%,#FF6B7D 100%)",
