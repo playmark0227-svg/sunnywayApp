@@ -2,7 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, EmptyState } from "@/components/ui";
-import { BrandForm, BrandEditButton } from "@/components/AdminForms";
+import { BrandForm, BrandEditButton, DeleteButton } from "@/components/AdminForms";
+import { deleteBrandAction } from "@/lib/actions/admin";
 import { Icon } from "@/components/Icon";
 import { yen } from "@/lib/labels";
 
@@ -28,6 +29,13 @@ export default async function BrandsPage() {
                     <div className="flex items-center justify-end gap-2">
                       {b.contactEmail && <Link href={`/admin/mails?to=${encodeURIComponent(b.contactEmail)}`} className="btn-ghost px-3 py-2 text-xs"><Icon name="mail" className="h-3.5 w-3.5" /> メール</Link>}
                       <BrandEditButton brand={{ id: b.id, name: b.name, contactName: b.contactName, contactEmail: b.contactEmail, monthlyFeeYen: b.monthlyFeeYen, notes: b.notes, active: b.active }} />
+                      <DeleteButton
+                        action={deleteBrandAction}
+                        idName="brandId"
+                        id={b.id}
+                        title="ブランドを削除しますか？"
+                        message={(b._count.products > 0 || b._count.campaigns > 0) ? `「${b.name}」と、ひもづく商品 ${b._count.products} 件・掲載 ${b._count.campaigns} 件（および応募）も削除されます。` : `「${b.name}」を削除します。`}
+                      />
                     </div>
                   </td>
                 </tr>

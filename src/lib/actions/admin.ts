@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
@@ -314,6 +315,56 @@ export async function updateCampaignAction(
   revalidatePath("/admin/campaigns");
   revalidatePath("/app");
   return { ok: true };
+}
+
+// ============================================================
+// 削除（掲載 / 商品 / ブランド）
+// 関連データは Prisma スキーマの onDelete: Cascade で連鎖削除される。
+//   掲載 → 応募 ／ 商品 → 掲載 → 応募 ／ ブランド → 商品 → 掲載 → 応募
+// 取引(Transaction)はインフルエンサーに紐づく支払履歴として保持する。
+// ============================================================
+
+/** 掲載（キャンペーン）を削除。ひもづく応募も連鎖削除される。 */
+export async function deleteCampaignAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("campaignId") ?? "");
+  if (!id) return;
+  const c = await prisma.campaign.findUnique({ where: { id }, select: { title: true, _count: { select: { applications: true } } } });
+  if (!c) return;
+  await prisma.campaign.delete({ where: { id } });
+  await recordAudit({ actorId: admin.userId, action: "campaign.delete", target: id, meta: { title: c.title, applications: c._count.applications } });
+  revalidatePath("/admin/campaigns");
+  revalidatePath("/app");
+  redirect("/admin/campaigns");
+}
+
+/** 商品を削除。ひもづく掲載・応募も連鎖削除される。 */
+export async function deleteProductAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("productId") ?? "");
+  if (!id) return;
+  const p = await prisma.product.findUnique({ where: { id }, select: { name: true, _count: { select: { campaigns: true } } } });
+  if (!p) return;
+  await prisma.product.delete({ where: { id } });
+  await recordAudit({ actorId: admin.userId, action: "product.delete", target: id, meta: { name: p.name, campaigns: p._count.campaigns } });
+  revalidatePath("/admin/products");
+  revalidatePath("/admin/campaigns");
+  revalidatePath("/app");
+}
+
+/** ブランドを削除。ひもづく商品・掲載・応募も連鎖削除される。 */
+export async function deleteBrandAction(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  const id = String(formData.get("brandId") ?? "");
+  if (!id) return;
+  const b = await prisma.brand.findUnique({ where: { id }, select: { name: true, _count: { select: { products: true, campaigns: true } } } });
+  if (!b) return;
+  await prisma.brand.delete({ where: { id } });
+  await recordAudit({ actorId: admin.userId, action: "brand.delete", target: id, meta: { name: b.name, products: b._count.products, campaigns: b._count.campaigns } });
+  revalidatePath("/admin/brands");
+  revalidatePath("/admin/products");
+  revalidatePath("/admin/campaigns");
+  revalidatePath("/app");
 }
 
 /** インフルエンサーの認証バッジを付け外しする。 */

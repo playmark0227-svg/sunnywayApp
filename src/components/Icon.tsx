@@ -29,6 +29,7 @@ const ICON: Record<string, string> = {
   shield: '<path d="M12 3 19 6v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3Z"/>',
   clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.7"/>',
   tag: '<path d="M4 11V5h6l9 9-6 6-9-9Z"/><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"/>',
+  trash: '<path d="M5 7h14M10 7V5.6A1.6 1.6 0 0 1 11.6 4h.8A1.6 1.6 0 0 1 14 5.6V7M7 7l.8 11.2A2 2 0 0 0 9.8 20h4.4a2 2 0 0 0 2-1.8L17 7"/><path d="M10.5 11v5M13.5 11v5"/>',
 };
 
 export function Icon({

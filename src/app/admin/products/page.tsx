@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader, EmptyState } from "@/components/ui";
-import { ProductForm, ProductEditButton } from "@/components/AdminForms";
+import { ProductForm, ProductEditButton, DeleteButton } from "@/components/AdminForms";
+import { deleteProductAction } from "@/lib/actions/admin";
 import { Thumb, ART_BY_CATEGORY } from "@/components/Icon";
 import { yen } from "@/lib/labels";
 
@@ -29,8 +30,15 @@ export default async function ProductsPage() {
                 <h3 className="mt-2 font-semibold text-ink">{p.name}</h3>
                 <p className="text-xs text-muted">{p.brand.name}</p>
                 <div className="mt-3 flex items-center justify-between text-sm"><span className="font-medium text-ink/80">{p.retailPriceYen > 0 ? yen(p.retailPriceYen) : "—"}</span><span className="text-xs text-muted">掲載 {p._count.campaigns} 件</span></div>
-                <div className="mt-3 border-t border-line pt-3 text-right">
+                <div className="mt-3 flex items-center justify-end gap-2 border-t border-line pt-3">
                   <ProductEditButton product={{ id: p.id, brandId: p.brandId, name: p.name, category: p.category, description: p.description, imageUrl: p.imageUrl, retailPriceYen: p.retailPriceYen }} brands={brandsForEdit} />
+                  <DeleteButton
+                    action={deleteProductAction}
+                    idName="productId"
+                    id={p.id}
+                    title="商品を削除しますか？"
+                    message={p._count.campaigns > 0 ? `「${p.name}」と、ひもづく掲載 ${p._count.campaigns} 件（および応募）も削除されます。` : `「${p.name}」を削除します。`}
+                  />
                 </div>
               </div>
             </div>

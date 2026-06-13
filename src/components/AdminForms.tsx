@@ -133,6 +133,52 @@ function useCloseOnOk(s: FormState, close: () => void) {
   useEffect(() => { if (s?.ok) close(); }, [s, close]);
 }
 
+// ============================================================
+// 削除（確認ダイアログ付き）
+// ============================================================
+
+/** 危険操作用の削除ボタン。クリックで確認ダイアログを開き、実行するとサーバーアクションへ。 */
+export function DeleteButton({
+  action, idName, id, title, message, buttonLabel = "削除", confirmLabel = "削除する",
+}: {
+  action: (formData: FormData) => Promise<void>;
+  idName: string;
+  id: string;
+  title: string;
+  message: string;
+  buttonLabel?: string;
+  confirmLabel?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} className="btn-ghost px-3 py-2 text-xs text-rose-600 hover:bg-rose-50">
+        <Icon name="trash" className="h-3.5 w-3.5" /> {buttonLabel}
+      </button>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="screen-in card relative w-full max-w-md p-6">
+            <div className="flex items-start gap-3">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-rose-50 text-rose-600"><Icon name="trash" className="h-5 w-5" /></span>
+              <div className="min-w-0">
+                <h3 className="display font-semibold text-ink">{title}</h3>
+                <p className="mt-1 text-sm text-muted">{message}</p>
+                <p className="mt-1 text-xs text-rose-500">この操作は取り消せません。</p>
+              </div>
+            </div>
+            <form action={action} className="mt-5 flex justify-end gap-2">
+              <input type="hidden" name={idName} value={id} />
+              <button type="button" onClick={() => setOpen(false)} className="btn-ghost px-4 py-2 text-sm">キャンセル</button>
+              <SubmitButton className="rounded-full bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700" pendingText="削除中…">{confirmLabel}</SubmitButton>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 export type BrandLite = { id: string; name: string; contactName: string; contactEmail: string; monthlyFeeYen: number; notes: string; active: boolean };
 
 export function BrandEditButton({ brand }: { brand: BrandLite }) {
