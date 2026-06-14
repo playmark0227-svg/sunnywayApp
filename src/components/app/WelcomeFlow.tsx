@@ -3,6 +3,8 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Icon, SunMark } from "@/components/Icon";
+import { haptic } from "@/lib/haptics";
+import { fireConfetti } from "@/components/fx/confetti";
 import {
   loginAction,
   registerInfluencerAction,
@@ -37,12 +39,12 @@ export function WelcomeFlow() {
   useEffect(() => {
     if (localStorage.getItem("sw_onboarded") === "1") setStep("auth");
   }, []);
-  const finishOnboard = () => { localStorage.setItem("sw_onboarded", "1"); setStep("auth"); };
+  const finishOnboard = () => { haptic("success"); fireConfetti({ y: 0.4 }); localStorage.setItem("sw_onboarded", "1"); setStep("auth"); };
 
   if (step === "onboard") {
     const s = SLIDES[slide];
     const last = slide === SLIDES.length - 1;
-    const next = () => (last ? finishOnboard() : setSlide(slide + 1));
+    const next = () => { haptic("tap"); last ? finishOnboard() : setSlide(slide + 1); };
     const dots = (
       <div className="flex gap-2">
         {SLIDES.map((_, i) => <span key={i} className={`h-2 rounded-full transition-all ${i === slide ? "w-6 bg-white" : "w-2 bg-white/40"}`} style={s.brand ? {} : { background: i === slide ? "#EC5A36" : "rgba(36,30,26,.15)" }} />)}

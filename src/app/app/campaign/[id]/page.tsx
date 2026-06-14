@@ -19,8 +19,8 @@ export default async function CampaignDetail({ params }: { params: Promise<{ id:
 
   return (
     <div className="fade pb-8">
-      <header className="sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
-        <Link href="/app" className="grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5"><Icon name="back" className="h-5 w-5" /></Link>
+      <header data-elevate className="elevate sticky top-0 z-20 flex items-center gap-2 bg-canvas/80 px-3 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
+        <Link href="/app" data-haptic="tap" className="ripple-host grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5"><Icon name="back" className="h-5 w-5" /></Link>
         <h1 className="display text-lg font-semibold text-ink">案件の詳細</h1>
       </header>
 
@@ -46,8 +46,12 @@ export default async function CampaignDetail({ params }: { params: Promise<{ id:
           <p className="mt-2 whitespace-pre-wrap text-[15px] leading-relaxed text-ink/85">{c.brief || "—"}</p>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 rounded-2xl bg-canvas px-4 py-3 text-sm text-muted">
-          <Icon name="user" className="h-4 w-4" /> これまで <b className="text-ink">{applied}</b> 名が応募
+        <div className="mt-4 rounded-2xl bg-canvas px-4 py-3.5">
+          <div className="flex items-center justify-between text-sm text-muted">
+            <span className="flex items-center gap-2"><Icon name="user" className="h-4 w-4" /> これまで <b className="text-ink">{applied}</b> 名が応募</span>
+            <span className="text-xs">目標 {c.targetInfluencers}名</span>
+          </div>
+          <div className="progress-track mt-2.5 h-2 bg-ink/5"><div className="progress-fill h-full rounded-full bg-sunrise" style={{ width: `${Math.min(100, Math.max(6, Math.round((applied / Math.max(1, c.targetInfluencers)) * 100)))}%` }} /></div>
         </div>
 
         <div className="mt-6">

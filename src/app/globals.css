@@ -241,3 +241,61 @@ body::before {
 .img-zoom:hover img { transform: scale(1.06); }
 .btn-primary:hover { filter: saturate(1.06) brightness(1.04); }
 .tick { @apply inline-block h-3.5 w-1 shrink-0 rounded-full bg-sunrise; }
+
+/* ============ インタラクション層（操作への手応え）============ */
+
+/* トースト（上から滑り込み） */
+.toast-in { animation: toastIn .42s cubic-bezier(.22,1,.36,1) both; }
+@keyframes toastIn { from { opacity:0; transform: translateY(-14px) scale(.96); } to { opacity:1; transform:none; } }
+
+/* 押せる要素の手応え（タップで沈み、離すと戻る） */
+.press { transition: transform .14s cubic-bezier(.22,1,.36,1), box-shadow .2s ease, filter .2s ease; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.press:active { transform: scale(.96); }
+.pressable { transition: transform .18s cubic-bezier(.22,1,.36,1), box-shadow .25s ease; touch-action: manipulation; }
+.pressable:active { transform: scale(.985); }
+
+/* リップル（押下点から波紋） */
+.ripple-host { position: relative; overflow: hidden; }
+.ripple-dot { position: absolute; border-radius: 9999px; background: currentColor; opacity: .28; transform: translate(-50%,-50%) scale(0); pointer-events: none; animation: rippleGo .6s ease-out forwards; }
+@keyframes rippleGo { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+
+/* スクロールで出現（IntersectionObserver） */
+.reveal-io { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .7s cubic-bezier(.22,1,.36,1); will-change: opacity, transform; }
+.reveal-io.is-in { opacity: 1; transform: none; }
+
+/* グラデーション枠（ふちが光る） */
+.grad-border { position: relative; }
+.grad-border::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px;
+  background: linear-gradient(135deg, rgba(242,107,31,.9), rgba(255,107,125,.85) 55%, rgba(255,182,200,.7));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+}
+
+/* 進捗バー（出現時にスッと伸びる） */
+.progress-track { position: relative; overflow: hidden; border-radius: 9999px; }
+.progress-fill { transform-origin: left center; animation: progFill 1s cubic-bezier(.22,1,.36,1) both; }
+@keyframes progFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* カウントアップ完了時のひと光り */
+.count-glow { animation: countGlow 1.4s ease-out .6s both; }
+@keyframes countGlow { 0%,100% { filter: none; } 30% { filter: drop-shadow(0 2px 10px rgba(242,107,31,.45)); } }
+
+/* タブ追従インジケーター（位置は inline style の transform で制御） */
+.nav-indicator { transition: transform .34s cubic-bezier(.34,1.45,.5,1); }
+
+/* アクティブになった瞬間のアイコン弾み */
+.icon-bounce { animation: iconBounce .42s cubic-bezier(.34,1.56,.64,1); }
+@keyframes iconBounce { 0%{ transform: scale(.8); } 55%{ transform: scale(1.18); } 100%{ transform: scale(1); } }
+
+/* スクロール時にヘッダーへ薄い影（client で .is-elevated を付与） */
+.elevate { transition: box-shadow .3s ease, background-color .3s ease; }
+.elevate.is-elevated { box-shadow: 0 6px 20px -12px rgba(116,46,19,.35); }
+
+/* フォーカスリング（キーボード操作の視認性） */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none; box-shadow: 0 0 0 3px rgba(242,107,31,.35); border-radius: 12px;
+}
+
+/* 段組みセグメント（案件管理タブ）のサム移動を滑らかに */
+.seg-thumb { transition: transform .32s cubic-bezier(.34,1.4,.5,1); }

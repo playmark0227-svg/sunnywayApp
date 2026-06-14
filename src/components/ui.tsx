@@ -12,11 +12,11 @@ export function PageHeader({ title, description, action }: { title: string; desc
   );
 }
 
-export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
+export function Stat({ label, value, sub, delay = 0 }: { label: string; value: React.ReactNode; sub?: string; delay?: number }) {
   return (
-    <div className="card hover-lift p-6">
+    <div className="card hover-lift reveal p-6" style={{ animationDelay: `${delay}ms` }}>
       <div className="text-xs font-medium uppercase tracking-wider text-muted">{label}</div>
-      <div className="grad-num mt-2 text-3xl font-bold">{value}</div>
+      <div className="grad-num count-glow mt-2 text-3xl font-bold">{value}</div>
       {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
     </div>
   );

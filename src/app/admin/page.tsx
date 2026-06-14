@@ -23,12 +23,12 @@ export default async function AdminDashboard() {
     <div>
       <PageHeader title="ダッシュボード" description="プラットフォーム全体のサマリー" />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <Stat label="ブランド" value={<CountUp value={brandCount} />} />
-        <Stat label="インフルエンサー" value={<CountUp value={infCount} />} />
-        <Stat label="募集中の掲載" value={<CountUp value={openCount} />} />
-        <Stat label="取り上げ件数" value={<CountUp value={posted} />} />
-        <Stat label="合計リーチ" value={<CountUp value={reachAgg._sum.postReach ?? 0} />} />
-        <Stat label="報酬支払額" value={<CountUp value={paidAgg._sum.amountYen ?? 0} prefix="¥" />} sub="振込済みの総額" />
+        <Stat label="ブランド" value={<CountUp value={brandCount} />} delay={0} />
+        <Stat label="インフルエンサー" value={<CountUp value={infCount} />} delay={70} />
+        <Stat label="募集中の掲載" value={<CountUp value={openCount} />} delay={140} />
+        <Stat label="取り上げ件数" value={<CountUp value={posted} />} delay={210} />
+        <Stat label="合計リーチ" value={<CountUp value={reachAgg._sum.postReach ?? 0} />} delay={280} />
+        <Stat label="報酬支払額" value={<CountUp value={paidAgg._sum.amountYen ?? 0} prefix="¥" />} sub="振込済みの総額" delay={350} />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">

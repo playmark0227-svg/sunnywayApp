@@ -32,11 +32,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div className="fade">
-      <header className="sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
+      <header data-elevate className="elevate sticky top-0 z-20 flex items-center justify-between bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <h1 className="display text-xl font-semibold text-ink">さがす</h1>
-        <Link href="/app/notifications" className="relative grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5">
-          <Icon name="bell" className="h-5 w-5" />
-          {unread > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-sunny-500 px-1 text-[10px] font-bold text-white">{unread}</span>}
+        <Link href="/app/notifications" data-haptic="tap" className="ripple-host relative grid h-10 w-10 place-items-center rounded-full text-ink/65 hover:bg-ink/5">
+          <Icon name="bell" className={`h-5 w-5 ${unread > 0 ? "breathe" : ""}`} />
+          {unread > 0 && <span className="pop absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-sunny-500 px-1 text-[10px] font-bold text-white">{unread}</span>}
         </Link>
       </header>
 
@@ -52,7 +52,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
       <div className="mt-4 flex gap-2 overflow-x-auto px-5 pb-1">
         {CATS.map((c) => (
-          <Link key={c} href={c === "すべて" ? "/app" : `/app?cat=${encodeURIComponent(c)}`} className={`chip whitespace-nowrap ${cat === c ? "bg-ink text-white" : "border border-line bg-surface text-ink/70"}`}>{c}</Link>
+          <Link key={c} href={c === "すべて" ? "/app" : `/app?cat=${encodeURIComponent(c)}`} data-haptic="select" className={`chip press whitespace-nowrap ${cat === c ? "bg-ink text-white shadow-soft" : "border border-line bg-surface text-ink/70"}`}>{c}</Link>
         ))}
       </div>
 
@@ -69,10 +69,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 const already = appliedIds.has(c.id);
                 const tags = parseTags(c.tags);
                 const reward = (c.rewardType === "PAID" || c.rewardType === "BOTH") && c.rewardYen > 0 ? "¥" + num(c.rewardYen) : c.rewardType === "OTHER" ? "特別報酬" : "ギフティング";
+                const pct = Math.min(100, Math.round((applied / Math.max(1, c.targetInfluencers)) * 100));
                 return (
-                  <article key={c.id} style={{ animationDelay: `${i * 80}ms` }} className="reveal tap img-zoom w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft hover-lift md:w-auto md:shrink">
+                  <article key={c.id} style={{ animationDelay: `${i * 80}ms` }} className="reveal ripple-host img-zoom w-[15.5rem] shrink-0 snap-start overflow-hidden rounded-3xl border border-line bg-surface shadow-soft hover-lift md:w-auto md:shrink">
                     <div className="relative">
-                      <Link href={`/app/campaign/${c.id}`} className="block"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-44" /></Link>
+                      <Link href={`/app/campaign/${c.id}`} data-haptic="tap" className="block"><Thumb imageUrl={c.product.imageUrl} art={art} className="h-44" /></Link>
                       {tags[0] && <span className="badge absolute left-3 top-3 bg-white/90 text-ink/80 backdrop-blur">{tags[0]}</span>}
                       <FavoriteButton campaignId={c.id} fav={favs.has(c.id)} />
                     </div>
@@ -80,8 +81,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">{c.brand.name}</p>
                       <Link href={`/app/campaign/${c.id}`}><h3 className="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-ink">{c.title}</h3></Link>
                       <div className="mt-3 flex items-center gap-1.5 text-sunny-600"><Icon name="spark" className="h-4 w-4" fill /><span className="grad-num text-sm font-bold">{reward}</span></div>
-                      <div className="mt-3 flex items-center justify-between border-t border-line pt-3 text-xs text-muted"><span>応募 <b className="text-ink">{applied}</b>/{c.targetInfluencers}名</span><span>〆 {c.deadline}</span></div>
-                      <div className="mt-3">{already ? <p className="rounded-full bg-ink/5 py-2.5 text-center text-sm font-medium text-muted">応募済み</p> : <ApplyForm campaignId={c.id} />}</div>
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between text-xs text-muted"><span>応募 <b className="text-ink">{applied}</b>/{c.targetInfluencers}名</span><span>〆 {c.deadline}</span></div>
+                        <div className="progress-track mt-2 h-1.5 bg-ink/5"><div className="progress-fill h-full rounded-full bg-sunrise" style={{ width: `${Math.max(6, pct)}%` }} /></div>
+                      </div>
+                      <div className="mt-3">{already ? <p className="flex items-center justify-center gap-1 rounded-full bg-emerald-50 py-2.5 text-center text-sm font-medium text-emerald-700"><Icon name="check" className="h-4 w-4" />応募済み</p> : <ApplyForm campaignId={c.id} />}</div>
                     </div>
                   </article>
                 );

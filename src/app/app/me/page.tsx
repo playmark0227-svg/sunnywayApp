@@ -27,30 +27,30 @@ export default async function MePage() {
 
   return (
     <div className="fade">
-      <header className="sticky top-0 z-20 flex items-center bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
+      <header data-elevate className="elevate sticky top-0 z-20 flex items-center bg-canvas/80 px-5 pb-3 backdrop-blur-xl" style={{ paddingTop: "max(0.9rem,env(safe-area-inset-top))" }}>
         <h1 className="display text-xl font-semibold text-ink">マイページ</h1>
       </header>
 
       <div className="px-5 pb-6 pt-2">
         <div className="flex items-center gap-4">
-          <div className="rounded-full bg-sunrise p-0.5 shadow-lift"><SunMark className="h-16 w-16" /></div>
+          <div className="grad-move rounded-full bg-sunrise p-0.5 shadow-lift"><SunMark className="h-16 w-16" /></div>
           <div><div className="flex items-center gap-1.5"><p className="display text-xl font-semibold text-ink">{profile.user.name}</p>{profile.verified && <Icon name="check" className="h-4 w-4 text-sunny-500" />}</div><p className="text-sm text-muted">@{profile.handle} ・ {num(profile.followers)} フォロワー</p></div>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3 px-5">
-        {[{ l: "応募", n: profile.applications.length, yen: false }, { l: "取り上げ", n: posted, yen: false }, { l: "報酬", n: reward, yen: true }].map((s) => (
-          <div key={s.l} className="rounded-2xl border border-line bg-surface p-3 text-center"><div className="grad-num text-xl font-bold"><CountUp value={s.n} prefix={s.yen ? "¥" : ""} /></div><div className="mt-0.5 text-[11px] text-muted">{s.l}</div></div>
+        {[{ l: "応募", n: profile.applications.length, yen: false }, { l: "取り上げ", n: posted, yen: false }, { l: "報酬", n: reward, yen: true }].map((s, i) => (
+          <div key={s.l} style={{ animationDelay: `${i * 90}ms` }} className="reveal hover-lift rounded-2xl border border-line bg-surface p-3 text-center"><div className="count-glow grad-num text-xl font-bold"><CountUp value={s.n} prefix={s.yen ? "¥" : ""} /></div><div className="mt-0.5 text-[11px] text-muted">{s.l}</div></div>
         ))}
       </div>
 
       <p className="px-5 pb-2 pt-7 text-xs font-semibold uppercase tracking-wider text-muted">アカウント</p>
       <div className="mx-5 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
         {ITEMS.map(([k, icon, label]) => (
-          <Link key={k} href={`/app/me/${k}`} className="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-canvas">
+          <Link key={k} href={`/app/me/${k}`} data-haptic="tap" className="ripple-host flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-canvas">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-sunny-50 text-sunny-600"><Icon name={icon} className="h-5 w-5" /></span>
             <span className="flex-1 text-sm font-medium text-ink">{label}</span>
-            {k === "notify" && !profile.notify && <span className="text-xs text-sunny-600">ONにしよう</span>}
+            {k === "notify" && !profile.notify && <span className="breathe text-xs text-sunny-600">ONにしよう</span>}
             <span className="text-ink/25"><Icon name="chevron" className="h-4 w-4" /></span>
           </Link>
         ))}

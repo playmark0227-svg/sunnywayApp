@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/PwaRegister";
+import { Toaster } from "@/components/fx/Toast";
+import { TapFX } from "@/components/fx/TapFX";
 
 // 見出しの欧文＝Montserrat、和文・本文＝Noto Sans JP（公式サイトに準拠）
 const display = Montserrat({
@@ -35,7 +37,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" className={`${display.variable} ${noto.variable}`}>
-      <body>{children}<PwaRegister /></body>
+      <body>{children}<Toaster /><TapFX /><PwaRegister /></body>
     </html>
   );
 }
